@@ -30,6 +30,11 @@ app.post("/api/upload", upload.single("file"), (req,res) =>{
   res.status(200).json("Image has been uploaded!");
 })
 
+app.use((req,res,next)=>{
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+})
+
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postsRoute);
