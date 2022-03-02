@@ -1,6 +1,8 @@
 import React, { useReducer } from "react";
 import data from "../components/assets/data";
 
+// const BASE_URL = "http://localhost:5000/api";
+
 const PostsContext = React.createContext({
   isLoggedIn: false,
   login: () => {},
@@ -8,7 +10,6 @@ const PostsContext = React.createContext({
   filterPosts: () => {},
   resetPosts: () => {},
 });
-
 
 const postsReducer = (state, action) => {
   if (action.type === "FILTER") {
@@ -42,6 +43,13 @@ const postsReducer = (state, action) => {
     };
   }
 
+  // if (action.type === "START") {
+  //   return {
+  //     blogPosts: action.payload,
+  //     isLoggedIn: state.isLoggedIn,
+  //   };
+  // }
+
   return state;
 };
 
@@ -53,6 +61,30 @@ export const PostsProvider = (props) => {
 
   const loginHandler = () => {
     postsDispatch({ type: "LOGIN" });
+    // console.log(dbPosts);
+    // const x = new Date(allPosts[0].createdAt);
+    // const now = new Date();
+    // const curr = now.getTime();
+    // const postDate = x.getTime();
+    // const diff = curr - postDate;
+    // // const inHours = diff * 0.0000002778;
+    // const inHours = diff * 0.0000002778;
+    // const inDays = inHours * 0.041667;
+    // let displayedDate;
+    // displayedDate = `${Math.floor(inHours)} ${
+    //   inHours >= 2 ? "hours" : "hour"
+    // } ago`;
+
+    // if (inHours > 24) {
+    //   displayedDate = `${Math.floor(inDays)} ${
+    //     inDays >= 2 ? "days" : "day"
+    //   } ago`;
+    // }
+    // console.log(`${x.getDay()-1}-${x.getMonth()+1}-${x.getFullYear()}`);
+    // console.log(diff * 0.0000002778);
+    // console.log(diff);
+    // console.log(displayedDate);
+    // console.log(allPosts);
   };
 
   const logoutHandler = () => {
@@ -63,10 +95,16 @@ export const PostsProvider = (props) => {
     postsDispatch({ type: "FILTER", payload: category });
   };
 
-
   const resetPostsHandler = () => {
     postsDispatch({ type: "RESET" });
   };
+
+  // const appStart = async () => {
+  //   const response = await axios.get(`${BASE_URL}/posts`);
+  //   // const response = await axios.get('/posts');
+  //   // console.log(response.data);
+  //   postsDispatch({ type: "START", payload: response.data });
+  // };
 
   const contextData = {
     blogPosts: postsState.blogPosts,

@@ -12,10 +12,7 @@ router.post("/", async (req, res) => {
     return;
   } else {
     try {
-      const newPost = new Post({
-        title: req.body.title,
-        description: req.body.description,
-      });
+      const newPost = new Post(req.body);
       const savedPost = await newPost.save();
       res.status(200).json(savedPost);
     } catch (error) {
