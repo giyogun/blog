@@ -1,117 +1,152 @@
-import React, { useReducer } from "react";
-import data from "../components/assets/data";
-
-// const BASE_URL = "http://localhost:5000/api";
+import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router";
+import useApiCall from "../useApiCall";
 
 const PostsContext = React.createContext({
+  blogPosts: [],
+  searchedPosts: [],
   isLoggedIn: false,
   login: () => {},
   logout: () => {},
   filterPosts: () => {},
+  search: () => {},
   resetPosts: () => {},
 });
 
-const postsReducer = (state, action) => {
-  if (action.type === "FILTER") {
-    const filteredPosts = data.filter((m) =>
-      m.category.includes(action.payload)
-    );
+// const postsReducer = (state, action) => {
+//   if (action.type === "FILTER") {
+//     const filteredPosts = data.filter((m) =>
+//       m.category.includes(action.payload)
+//     );
 
-    return {
-      blogPosts: filteredPosts,
-      isLoggedIn: state.isLoggedIn,
-    };
-  }
+//     return {
+//       blogPosts: filteredPosts,
+//       isLoggedIn: state.isLoggedIn,
+//     };
+//   }
 
-  if (action.type === "LOGIN") {
-    return {
-      blogPosts: state.blogPosts,
-      isLoggedIn: true,
-    };
-  }
-  if (action.type === "LOGOUT") {
-    return {
-      blogPosts: state.blogPosts,
-      isLoggedIn: false,
-    };
-  }
+//   if (action.type === "LOGIN") {
+//     return {
+//       blogPosts: state.blogPosts,
+//       isLoggedIn: true,
+//     };
+//   }
+//   if (action.type === "LOGOUT") {
+//     return {
+//       blogPosts: state.blogPosts,
+//       isLoggedIn: false,
+//     };
+//   }
 
-  if (action.type === "RESET") {
-    return {
-      blogPosts: data,
-      isLoggedIn: state.isLoggedIn,
-    };
-  }
+//   if (action.type === "RESET") {
+//     return {
+//       blogPosts: data,
+//       isLoggedIn: state.isLoggedIn,
+//     };
+//   }
 
-  // if (action.type === "START") {
-  //   return {
-  //     blogPosts: action.payload,
-  //     isLoggedIn: state.isLoggedIn,
-  //   };
-  // }
+//   // if (action.type === "START") {
+//   //   return {
+//   //     blogPosts: action.payload,
+//   //     isLoggedIn: state.isLoggedIn,
+//   //   };
+//   // }
 
-  return state;
+//   return state;
+// };
+
+const BASE_URL = "http://localhost:5000/api/posts";
+
+const capitalize = (text) => {
+  const result = text.charAt(0).toUpperCase() + text.slice(1);
+
+  return result;
 };
 
 export const PostsProvider = (props) => {
-  const [postsState, postsDispatch] = useReducer(postsReducer, {
-    blogPosts: data,
-    isLoggedIn: false,
-  });
+  const [posts, setPosts] = useState([]);
+  const [posts1, setPosts1] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const history = useHistory();
 
-  const loginHandler = () => {
-    postsDispatch({ type: "LOGIN" });
-    // console.log(dbPosts);
-    // const x = new Date(allPosts[0].createdAt);
-    // const now = new Date();
-    // const curr = now.getTime();
-    // const postDate = x.getTime();
-    // const diff = curr - postDate;
-    // // const inHours = diff * 0.0000002778;
-    // const inHours = diff * 0.0000002778;
-    // const inDays = inHours * 0.041667;
-    // let displayedDate;
-    // displayedDate = `${Math.floor(inHours)} ${
-    //   inHours >= 2 ? "hours" : "hour"
-    // } ago`;
+  const getAllPosts = useCallback((data) => {
+    setPosts(data);
+  }, []);
 
-    // if (inHours > 24) {
-    //   displayedDate = `${Math.floor(inDays)} ${
-    //     inDays >= 2 ? "days" : "day"
-    //   } ago`;
-    // }
-    // console.log(`${x.getDay()-1}-${x.getMonth()+1}-${x.getFullYear()}`);
-    // console.log(diff * 0.0000002778);
-    // console.log(diff);
-    // console.log(displayedDate);
-    // console.log(allPosts);
+  const filterAllPosts = useCallback((data, cat) => {
+    const filteredPosts = data.filter((m) => m.categories.includes(cat));
+
+    setPosts(filteredPosts);
+  }, []);
+
+  const searchPosts = useCallback((data, cat, title) => {
+    const posts = data.filter((m) => m.title.includes(capitalize(title)));
+
+    setPosts1(posts);
+  }, []);
+
+  const loginApi = useCallback(
+    (data) => {
+      console.log(data);
+      setIsLoggedIn(!!data);
+      history.push("/write");
+      // if(data){
+      //   setIsLoggedIn(true);
+      // }
+    },
+    [history]
+  );
+
+  const { queryPosts } = useApiCall(getAllPosts);
+  const { queryPosts: postSearch } = useApiCall(searchPosts);
+  const { queryPosts: filterPosts } = useApiCall(filterAllPosts);
+  const { queryPosts: userLogin } = useApiCall(loginApi);
+
+  useEffect(() => {
+    queryPosts(BASE_URL);
+  }, [queryPosts]);
+
+  // const [postsState, postsDispatch] = useReducer(postsReducer, {
+  //   blogPosts: data,
+  //   isLoggedIn: false,
+  // });
+
+  const loginHandler = (em, pass) => {
+    userLogin("http://localhost:5000/api/auth/login", null, null, {
+      method: "POST",
+      body: { email: em, password: pass },
+    });
   };
 
   const logoutHandler = () => {
-    postsDispatch({ type: "LOGOUT" });
+    // postsDispatch({ type: "LOGOUT" });
+    setIsLoggedIn(false);
   };
 
   const filterPostsHandler = (category) => {
-    postsDispatch({ type: "FILTER", payload: category });
+    // postsDispatch({ type: "FILTER", payload: category });
+    filterPosts(BASE_URL, category);
+  };
+
+  const searchPostsHandler = (enteredText) => {
+    // postsDispatch({ type: "FILTER", payload: category });
+    postSearch(BASE_URL, null, enteredText);
   };
 
   const resetPostsHandler = () => {
-    postsDispatch({ type: "RESET" });
+    // postsDispatch({ type: "RESET" });
+    queryPosts(BASE_URL);
+    setPosts1([]);
   };
 
-  // const appStart = async () => {
-  //   const response = await axios.get(`${BASE_URL}/posts`);
-  //   // const response = await axios.get('/posts');
-  //   // console.log(response.data);
-  //   postsDispatch({ type: "START", payload: response.data });
-  // };
-
   const contextData = {
-    blogPosts: postsState.blogPosts,
-    isLoggedIn: postsState.isLoggedIn,
+    blogPosts: posts,
+    searchedPosts: posts1,
+    isLoggedIn: isLoggedIn,
     login: loginHandler,
     logout: logoutHandler,
     filterPosts: filterPostsHandler,
+    search: searchPostsHandler,
     resetPosts: resetPostsHandler,
   };
   return (

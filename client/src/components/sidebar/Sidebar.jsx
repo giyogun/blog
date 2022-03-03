@@ -1,4 +1,5 @@
 import React, { useContext, useRef } from "react";
+import { useHistory } from "react-router";
 import classes from "./Sidebar.module.css";
 import {
   FaFacebookSquare,
@@ -7,16 +8,20 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 import PostsContext from "../../store/postsContext";
-import { Link } from "react-router-dom";
+
+// const BASE_URL = "http://localhost:5000/api/posts";
 
 const Sidebar = () => {
   const ctx = useContext(PostsContext);
+  const { filterPosts } = ctx;
+
   const musicRef = useRef();
   const lifeRef = useRef();
   const styleRef = useRef();
   const sportsRef = useRef();
   const techRef = useRef();
   const cinemaRef = useRef();
+  const history = useHistory();
 
   return (
     <div className={classes.sidebar}>
@@ -34,65 +39,69 @@ const Sidebar = () => {
       <div className={classes.sidebarItem}>
         <span className={classes.sidebarTitle}>CATEGORIES</span>
         <ul className={classes.sidebarList}>
-          <li className={classes.sidebarListItem} ref={lifeRef}>
-            <Link
-              to="/"
-              onClick={() => {
-                ctx.filterPosts(lifeRef.current.innerText);
-              }}
-            >
-              Life
-            </Link>
+          <li
+            className={classes.sidebarListItem}
+            ref={lifeRef}
+            onClick={() => {
+              history.push(`/?cat=${lifeRef.current.innerText}`);
+
+              filterPosts(lifeRef.current.innerText);
+            }}
+          >
+            Life
           </li>
-          <li className={classes.sidebarListItem} ref={musicRef}>
-            <Link
-              to="/"
-              onClick={() => {
-                ctx.filterPosts(musicRef.current.innerText);
-              }}
-            >
-              Music
-            </Link>
+          <li
+            className={classes.sidebarListItem}
+            ref={musicRef}
+            onClick={() => {
+              history.push(`/?cat=${musicRef.current.innerText}`);
+
+              filterPosts(musicRef.current.innerText);
+            }}
+          >
+            Music
           </li>
-          <li className={classes.sidebarListItem} ref={styleRef}>
-            <Link
-              to="/"
-              onClick={() => {
-                ctx.filterPosts(styleRef.current.innerText);
-              }}
-            >
-              Style
-            </Link>
+          <li
+            className={classes.sidebarListItem}
+            ref={styleRef}
+            onClick={() => {
+              history.push(`/?cat=${sportsRef.current.innerText}`);
+
+              filterPosts(styleRef.current.innerText);
+            }}
+          >
+            Style
           </li>
-          <li className={classes.sidebarListItem} ref={sportsRef}>
-            <Link
-              to="/"
-              onClick={() => {
-                ctx.filterPosts(sportsRef.current.innerText);
-              }}
-            >
-              Sport
-            </Link>
+          <li
+            className={classes.sidebarListItem}
+            ref={sportsRef}
+            onClick={() => {
+              history.push(`/?cat=${sportsRef.current.innerText}`);
+              filterPosts(sportsRef.current.innerText);
+            }}
+          >
+            Sport
           </li>
-          <li className={classes.sidebarListItem} ref={techRef}>
-            <Link
-              to="/"
-              onClick={() => {
-                ctx.filterPosts(techRef.current.innerText);
-              }}
-            >
-              Tech
-            </Link>
+          <li
+            className={classes.sidebarListItem}
+            ref={techRef}
+            onClick={() => {
+              history.push(`/?cat=${techRef.current.innerText}`);
+              filterPosts(techRef.current.innerText);
+            }}
+          >
+            Tech
           </li>
-          <li className={classes.sidebarListItem} ref={cinemaRef}>
-            <Link
-              to="/"
-              onClick={() => {
-                ctx.filterPosts(cinemaRef.current.innerText);
-              }}
-            >
-              Cinema
-            </Link>
+          <li
+            className={classes.sidebarListItem}
+            ref={cinemaRef}
+            onClick={() => {
+              history.push(`/?cat=${cinemaRef.current.innerText}`);
+
+              filterPosts(cinemaRef.current.innerText);
+            }}
+          >
+            Cinema
           </li>
         </ul>
       </div>

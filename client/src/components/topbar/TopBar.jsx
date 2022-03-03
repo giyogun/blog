@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef } from "react";
 import classes from "./TopBar.module.css";
 import {
   FaFacebookSquare,
@@ -11,27 +11,19 @@ import {
 import profilePic from "../assets/photo5776120754558056466.jpg";
 import { Link, NavLink } from "react-router-dom";
 import PostsContext from "../../store/postsContext";
-import data from "../assets/data";
-
-const capitalize = (text) => {
-  const result = text.charAt(0).toUpperCase() + text.slice(1);
-
-  return result;
-};
 
 const TopBar = () => {
-  const [filteredPosts, setFilteredPosts] = useState([]);
+  // const resetHandler = (data) => {
+  //   // setFilteredPosts(data);
+  // };
+
   const searchRef = useRef();
   const ctx = useContext(PostsContext);
 
   const searchPostsHandler = (e) => {
     e.preventDefault();
     const enteredText = searchRef.current.value;
-    const search = data.filter((m) =>
-      m.title.includes(capitalize(enteredText))
-    );
-
-    setFilteredPosts(search);
+    ctx.search(enteredText);
   };
   return (
     <div className={classes.top}>
@@ -87,10 +79,16 @@ const TopBar = () => {
         <div className={classes.dropdown}>
           {ctx.isLoggedIn ? (
             <img src={profilePic} alt="profile" className={classes.topImg} />
-          ) : <Link to="/login" className={classes.link}>LOGIN</Link>}
-          {ctx.isLoggedIn && <div className={classes.topDropdownContent}>
-            <Link to="/settings">Settings</Link>
-          </div>}
+          ) : (
+            <Link to="/login" className={classes.link}>
+              LOGIN
+            </Link>
+          )}
+          {ctx.isLoggedIn && (
+            <div className={classes.topDropdownContent}>
+              <Link to="/settings">Settings</Link>
+            </div>
+          )}
         </div>
         <form onSubmit={searchPostsHandler}>
           <div
@@ -104,12 +102,12 @@ const TopBar = () => {
               ref={searchRef}
             />
             <div className={classes.searchResults}>
-              {filteredPosts.map((m) => (
+              {ctx.searchedPosts.map((m) => (
                 <Link
-                  to={`/posts/${m.id}`}
-                  key={m.id}
+                  to={`/posts/${m._id}`}
+                  key={m._id}
                   onClick={() => {
-                    setFilteredPosts([]);
+                    ctx.resetPosts();
                     searchRef.current.value = "";
                   }}
                 >
