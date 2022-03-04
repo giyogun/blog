@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import useApiCall from "../useApiCall";
+import useApiCall from "../hooks/useApiCall";
 
 const PostsContext = React.createContext({
   blogPosts: [],
   searchedPosts: [],
   isLoggedIn: false,
+  post: {},
   login: () => {},
   logout: () => {},
   filterPosts: () => {},
   search: () => {},
   resetPosts: () => {},
+  getPost: (id) => {},
 });
 
 // const postsReducer = (state, action) => {
@@ -55,7 +57,7 @@ const PostsContext = React.createContext({
 //   return state;
 // };
 
-const BASE_URL = "http://localhost:5000/api/posts";
+const BASE_URL = "http://localhost:5000/api";
 
 const capitalize = (text) => {
   const result = text.charAt(0).toUpperCase() + text.slice(1);
@@ -66,11 +68,18 @@ const capitalize = (text) => {
 export const PostsProvider = (props) => {
   const [posts, setPosts] = useState([]);
   const [posts1, setPosts1] = useState([]);
+  const [singlePost, setSinglePost] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const history = useHistory();
 
-  const getAllPosts = useCallback((data) => {
+  const getAllPosts = useCallback((data, a, b) => {
     setPosts(data);
+  }, []);
+
+  const getOnePost = useCallback((data, a, b, id) => {
+    const single = data.find((item) => item._id === id);
+
+    setSinglePost(single);
   }, []);
 
   const filterAllPosts = useCallback((data, cat) => {
@@ -90,21 +99,23 @@ export const PostsProvider = (props) => {
       console.log(data);
       setIsLoggedIn(!!data);
       history.push("/write");
-      // if(data){
-      //   setIsLoggedIn(true);
-      // }
     },
     [history]
   );
 
   const { queryPosts } = useApiCall(getAllPosts);
-  const { queryPosts: postSearch } = useApiCall(searchPosts);
+  const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
+  const { queryPosts: postsSearch } = useApiCall(searchPosts);
   const { queryPosts: filterPosts } = useApiCall(filterAllPosts);
   const { queryPosts: userLogin } = useApiCall(loginApi);
 
   useEffect(() => {
-    queryPosts(BASE_URL);
+    queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
   }, [queryPosts]);
+
+  const getPostHandler = (id) => {
+    singlePostQuery({ method: "GET", url: `${BASE_URL}/posts` }, null, null, id);
+  };
 
   // const [postsState, postsDispatch] = useReducer(postsReducer, {
   //   blogPosts: data,
@@ -112,9 +123,10 @@ export const PostsProvider = (props) => {
   // });
 
   const loginHandler = (em, pass) => {
-    userLogin("http://localhost:5000/api/auth/login", null, null, {
+    userLogin({
       method: "POST",
       body: { email: em, password: pass },
+      url: `${BASE_URL}/auth/login`,
     });
   };
 
@@ -125,17 +137,17 @@ export const PostsProvider = (props) => {
 
   const filterPostsHandler = (category) => {
     // postsDispatch({ type: "FILTER", payload: category });
-    filterPosts(BASE_URL, category);
+    filterPosts({ method: "GET", url: `${BASE_URL}/posts` }, category);
   };
 
   const searchPostsHandler = (enteredText) => {
     // postsDispatch({ type: "FILTER", payload: category });
-    postSearch(BASE_URL, null, enteredText);
+    postsSearch({ method: "GET", url: `${BASE_URL}/posts` }, null, enteredText);
   };
 
   const resetPostsHandler = () => {
     // postsDispatch({ type: "RESET" });
-    queryPosts(BASE_URL);
+    queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
     setPosts1([]);
   };
 
@@ -143,11 +155,13 @@ export const PostsProvider = (props) => {
     blogPosts: posts,
     searchedPosts: posts1,
     isLoggedIn: isLoggedIn,
+    post: singlePost,
     login: loginHandler,
     logout: logoutHandler,
     filterPosts: filterPostsHandler,
     search: searchPostsHandler,
     resetPosts: resetPostsHandler,
+    getPost: getPostHandler,
   };
   return (
     <PostsContext.Provider value={contextData}>

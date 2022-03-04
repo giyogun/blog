@@ -2,6 +2,7 @@
   height: calc(100vh - 50px);
   display: flex;
   flex-direction: column;
+  column-gap: 1rem;
   align-items: center;
   justify-content: center;
   background: linear-gradient(
@@ -17,19 +18,66 @@
 }
 
 .regForm {
-  margin-top: 20px;
   display: flex;
+  column-gap: 1rem;
+  flex-wrap: wrap;
   flex-direction: column;
+
 }
 
-.regForm label {
-  margin: 10px 0;
+.regForm .regInput {
+  min-width: 15rem;
+  flex: 1;
+}
+
+.regInput input,
+.regInput select {
+  font: inherit;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 20rem;
+  max-width: 100%;
+}
+
+.regInput input:focus {
+  outline: none;
+  border-color: #240370;
+  background-color: #e0d4fd;
+}
+
+.regInput input,
+.regInput label {
+  display: block;
+}
+
+.regInput label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.regForm input:focus{
+  outline: none;
+  border-color: teal;
+  background-color: rgb(232, 253, 253);
+}
+
+.invalid input {
+  border: 1px solid #b40e0e;
+  background-color: #fddddd;
+}
+
+.invalid input:focus {
+  border-color: #ff8800;
+  background-color: #fbe8d2;
+}
+
+.error-text {
+  color: #b40e0e;
 }
 
 .regInput {
-  padding: 10px;
-  background-color: #fff;
-  border: none;
+  margin-bottom: 1rem;
 }
 
 .regButton {
