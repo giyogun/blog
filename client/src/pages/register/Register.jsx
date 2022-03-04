@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import classes from "./Register.module.css";
 import { GrClose } from "react-icons/gr";
 import { useHistory } from "react-router";
 import useClientVal from "../../hooks/useClientVal";
+import PostsContext from "../../store/postsContext";
 
 const Register = () => {
+  const ctx = useContext(PostsContext);
+  const { error, clear } = ctx;
   const history = useHistory();
   const validityArg = (value) => value.trim() !== "";
 
   const emailCheck = /^([a-zA-Z0-9_\-.+]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
+
+  const passwordCheck = /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[\W]).{6,}$/;
 
   const {
     value: username,
@@ -17,6 +22,7 @@ const Register = () => {
     inputBlurHandler: nameBlurHandler,
     validity: nameValueIsValid,
     reset: resetnameStates,
+    submit: submitUsername,
   } = useClientVal(validityArg);
 
   const {
@@ -26,36 +32,94 @@ const Register = () => {
     inputChangeHandler: emailChangeHandler,
     validity: emailValueIsValid,
     reset: resetEmailStates,
+    submit: submitEmail,
   } = useClientVal((value) => value.trim() !== "" && emailCheck.test(value));
 
-  let emailError = <p>Email cannot be empty!</p>;
+  const {
+    value: password,
+    hasError: passwordHasError,
+    inputBlurHandler: passwordBlurHandler,
+    inputChangeHandler: passwordChangeHandler,
+    validity: passwordValueIsValid,
+    reset: resetPasswordStates,
+    submit: submitPassword,
+  } = useClientVal((value) => value.trim() !== "" && passwordCheck.test(value));
+
+  let emailError = <p className={classes.errorText}>Email cannot be blank!</p>;
 
   if (email.trim() !== "") {
     if (!emailCheck.test(email)) {
-      emailError = <p>Please enter a valid email</p>;
+      emailError = (
+        <p className={classes.errorText}>Please enter a valid email</p>
+      );
+    }
+  }
+
+  let passwordError = (
+    <p className={classes.errorText}>Password cannot be blank!</p>
+  );
+
+  if (password.trim() !== "") {
+    if (!passwordCheck.test(password)) {
+      passwordError = (
+        <p className={classes.errorText}>Include a number and special char</p>
+      );
     }
   }
 
   let formIsValid = false;
-  if (nameValueIsValid && emailValueIsValid) {
+  if (nameValueIsValid && emailValueIsValid && passwordValueIsValid) {
     formIsValid = true;
   }
   const formSubmitHandler = (e) => {
     e.preventDefault();
 
+    submitEmail();
+    submitPassword();
+    submitUsername();
+
+    if (formIsValid) {
+      ctx.register(username, email, password);
+    }
+
     if (!formIsValid) return;
   };
+
+  const usernameClasses = !nameHasError
+    ? classes.regInput
+    : `${classes.regInput} ${classes.invalid}`;
 
   const emailClasses = !emailHasError
     ? classes.regInput
     : `${classes.regInput} ${classes.invalid}`;
+
+  const passwordClasses = !passwordHasError
+    ? classes.regInput
+    : `${classes.regInput} ${classes.invalid}`;
+
+  const emailRef = useRef();
+  const userNameRef = useRef();
+
+  useEffect(() => {
+    if (error === "Email is already registered") {
+      emailRef.current.focus();
+      setTimeout(() => {
+        clear();
+      }, 5000);
+    } else if (error === "Username is not available"){
+      userNameRef.current.focus();
+      setTimeout(() => {
+        clear();
+      }, 5000);
+    }
+  }, [clear, error]);
 
   return (
     <div className={classes.reg}>
       <span className={classes.regTitle}>Create Account</span>
       <form onSubmit={formSubmitHandler}>
         <div className={classes.regForm}>
-          <div className={classes.regInput}>
+          <div className={usernameClasses}>
             <label>Username</label>
             <input
               // className={classes.regInput}
@@ -64,9 +128,15 @@ const Register = () => {
               onChange={nameChangeHandler}
               onBlur={nameBlurHandler}
               value={username}
+              ref={userNameRef}
               // required
             />
-            {nameHasError && <p>Please enter a username!</p>}
+            {error === "Username is not available" && (
+              <p className={classes.errorText}>{error}</p>
+            )}
+            {nameHasError && (
+              <p className={classes.errorText}>Please enter a username!</p>
+            )}
           </div>
           <div className={emailClasses}>
             <label>Email</label>
@@ -77,13 +147,25 @@ const Register = () => {
               onChange={emailChangeHandler}
               onBlur={emailBlurHandler}
               value={email}
+              ref={emailRef}
               // required
             />
+            {error === "Email is already registered" && (
+              <p className={classes.errorText}>{error}</p>
+            )}
             {emailHasError && emailError}
           </div>
-          <div className={classes.regInput}>
+          <div className={passwordClasses}>
             <label>Password</label>
-            <input className={classes.regInput} type="password" required />
+            <input
+              className={classes.regInput}
+              type="password"
+              placeholder="Enter your password"
+              onBlur={passwordBlurHandler}
+              onChange={passwordChangeHandler}
+              minLength="6"
+            />
+            {passwordHasError && passwordError}
           </div>
           <button className={classes.regButton}>Continue</button>
         </div>

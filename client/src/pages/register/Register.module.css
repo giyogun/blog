@@ -17,17 +17,25 @@
   font-size: 50px;
 }
 
+
+
 .regForm {
-  display: flex;
+  display: flex; 
   column-gap: 1rem;
   flex-wrap: wrap;
   flex-direction: column;
-
+  margin-top: 20px;
+  width: 50%;
+  /* position:fixed; */
+  /* align-items: center;
+  top: 20em;
+  left: 12em;
+  /* align-items: center; */
 }
 
 .regForm .regInput {
-  min-width: 15rem;
-  flex: 1;
+  /* min-width: 15rem; */
+  /* flex: 1; */
 }
 
 .regInput input,
@@ -36,19 +44,20 @@
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
-  width: 20rem;
+  /* width: inherit; */
   max-width: 100%;
 }
 
-.regInput input:focus {
+/* .regInput input:focus {
   outline: none;
   border-color: #240370;
   background-color: #e0d4fd;
-}
+} */
 
 .regInput input,
 .regInput label {
   display: block;
+  /* width: 90%; */
 }
 
 .regInput label {
@@ -57,6 +66,7 @@
 }
 
 .regForm input:focus{
+  align-content: center;
   outline: none;
   border-color: teal;
   background-color: rgb(232, 253, 253);
@@ -72,8 +82,9 @@
   background-color: #fbe8d2;
 }
 
-.error-text {
+.errorText {
   color: #b40e0e;
+  margin-top: 10px;
 }
 
 .regInput {
@@ -88,6 +99,7 @@
   color: #fff;
   border-radius: 10px;
   padding: 10px;
+  /* max-width: 50%; */
 }
 
 .closeBtn {

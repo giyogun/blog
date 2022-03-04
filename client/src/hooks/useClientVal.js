@@ -16,6 +16,10 @@ const inputReducer = (state, action) => {
     return { value: "", inputFieldIsTouched: false };
   }
 
+  if (action.type === "SUBMIT") {
+    return { value: state.value, inputFieldIsTouched: true };
+  }
+
   return state;
 };
 
@@ -44,6 +48,12 @@ const useClientVal = (validateValue) => {
     // setInputFieldIsTouched(false);
   };
 
+  const submit = () => {
+    dispatchFunc({ type: "SUBMIT" });
+    // setEnteredValue("");
+    // setInputFieldIsTouched(false);
+  };
+
   return {
     value: inputState.value,
     hasError,
@@ -51,6 +61,7 @@ const useClientVal = (validateValue) => {
     inputChangeHandler,
     validity: valueIsValid,
     reset,
+    submit,
   };
 };
 

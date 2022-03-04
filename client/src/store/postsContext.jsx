@@ -7,55 +7,16 @@ const PostsContext = React.createContext({
   searchedPosts: [],
   isLoggedIn: false,
   post: {},
+  error: null,
+  clear: () => {},
   login: () => {},
   logout: () => {},
   filterPosts: () => {},
   search: () => {},
   resetPosts: () => {},
-  getPost: (id) => {},
+  getPost: () => {},
+  register: () => {},
 });
-
-// const postsReducer = (state, action) => {
-//   if (action.type === "FILTER") {
-//     const filteredPosts = data.filter((m) =>
-//       m.category.includes(action.payload)
-//     );
-
-//     return {
-//       blogPosts: filteredPosts,
-//       isLoggedIn: state.isLoggedIn,
-//     };
-//   }
-
-//   if (action.type === "LOGIN") {
-//     return {
-//       blogPosts: state.blogPosts,
-//       isLoggedIn: true,
-//     };
-//   }
-//   if (action.type === "LOGOUT") {
-//     return {
-//       blogPosts: state.blogPosts,
-//       isLoggedIn: false,
-//     };
-//   }
-
-//   if (action.type === "RESET") {
-//     return {
-//       blogPosts: data,
-//       isLoggedIn: state.isLoggedIn,
-//     };
-//   }
-
-//   // if (action.type === "START") {
-//   //   return {
-//   //     blogPosts: action.payload,
-//   //     isLoggedIn: state.isLoggedIn,
-//   //   };
-//   // }
-
-//   return state;
-// };
 
 const BASE_URL = "http://localhost:5000/api";
 
@@ -66,6 +27,7 @@ const capitalize = (text) => {
 };
 
 export const PostsProvider = (props) => {
+  const [errorMessage, setErrorMessage] = useState(null);
   const [posts, setPosts] = useState([]);
   const [posts1, setPosts1] = useState([]);
   const [singlePost, setSinglePost] = useState({});
@@ -97,11 +59,25 @@ export const PostsProvider = (props) => {
   const loginApi = useCallback(
     (data) => {
       console.log(data);
-      setIsLoggedIn(!!data);
-      history.push("/write");
+      if (data.statusText) {
+        setIsLoggedIn(true);
+        history.push("/write");
+      } else {
+        setErrorMessage(data);
+      }
+      // setIsLoggedIn(!!data.status);
     },
     [history]
   );
+
+  const registration = (data) => {
+    if (!data.statusText) {
+      setErrorMessage(data);
+    }
+    
+  };
+
+  const { queryPosts: registerQuery } = useApiCall(registration);
 
   const { queryPosts } = useApiCall(getAllPosts);
   const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
@@ -114,13 +90,26 @@ export const PostsProvider = (props) => {
   }, [queryPosts]);
 
   const getPostHandler = (id) => {
-    singlePostQuery({ method: "GET", url: `${BASE_URL}/posts` }, null, null, id);
+    singlePostQuery(
+      { method: "GET", url: `${BASE_URL}/posts` },
+      null,
+      null,
+      id
+    );
   };
 
-  // const [postsState, postsDispatch] = useReducer(postsReducer, {
-  //   blogPosts: data,
-  //   isLoggedIn: false,
-  // });
+  const registrationHandler = (username, email, password) => {
+    registerQuery({
+      url: `${BASE_URL}/auth/register`,
+      method: "POST",
+      body: {
+        username,
+        email,
+        password,
+      },
+    });
+    // setPass(password);
+  };
 
   const loginHandler = (em, pass) => {
     userLogin({
@@ -128,6 +117,7 @@ export const PostsProvider = (props) => {
       body: { email: em, password: pass },
       url: `${BASE_URL}/auth/login`,
     });
+    // console.log(res);
   };
 
   const logoutHandler = () => {
@@ -151,17 +141,24 @@ export const PostsProvider = (props) => {
     setPosts1([]);
   };
 
+  const clearErrorMessage = () => {
+    setErrorMessage(null);
+  };
+
   const contextData = {
     blogPosts: posts,
     searchedPosts: posts1,
     isLoggedIn: isLoggedIn,
     post: singlePost,
+    error: errorMessage,
+    clear: clearErrorMessage,
     login: loginHandler,
     logout: logoutHandler,
     filterPosts: filterPostsHandler,
     search: searchPostsHandler,
     resetPosts: resetPostsHandler,
     getPost: getPostHandler,
+    register: registrationHandler,
   };
   return (
     <PostsContext.Provider value={contextData}>

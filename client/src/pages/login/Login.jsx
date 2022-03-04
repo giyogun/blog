@@ -1,13 +1,24 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { useHistory } from "react-router";
 import PostsContext from "../../store/postsContext";
 import classes from "./Login.module.css";
 
 const Login = () => {
   const ctx = useContext(PostsContext);
+  const {error, clear} = ctx
   const history = useHistory();
   const email = useRef();
   const password = useRef();
+
+  useEffect(()=>{
+    if (error) {
+      email.current.focus();
+      setTimeout(() => {
+        clear();
+      }, 5000);
+    }
+  },[clear, error])
+
   const loginHandler = (e) => {
     e.preventDefault();
     const enteredEmail = email.current.value;
@@ -15,6 +26,7 @@ const Login = () => {
 
     ctx.login(enteredEmail, enteredPassword);
   };
+  
   return (
     <div className={classes.login}>
       <span className={classes.loginTitle}>Login</span>
@@ -36,6 +48,7 @@ const Login = () => {
       >
         Register
       </button>
+      {error && <p className={classes.errorText}>{error}</p>}
     </div>
   );
 };

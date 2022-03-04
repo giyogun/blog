@@ -1,10 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 
 // const BASE_URL = "http://localhost:5000/api";
 
 function useApiCall(applyData) {
-  // const [dbPosts, setDbPosts] = useState([]);
+  const [res, setRes] = useState(null);
 
   const queryPosts = useCallback(
     async (config, cat = "", title = undefined, id=null) => {
@@ -22,10 +22,16 @@ function useApiCall(applyData) {
         try {
           const response = await axios.post(config.url, config.body);
           // setDbPosts(response.data);
-          const data = response.data;
+          const data = response;
 
           applyData(data);
-        } catch (error) {}
+          // setRes(data.statusText);
+        } catch (err) {
+          // const x = new Error(err.message);
+          // setRes(err.response.data)
+          // console.log(err.response.data);
+          applyData(err.response.data)
+        }
       }
 
       // const response = await axios.get('/posts');
@@ -36,6 +42,7 @@ function useApiCall(applyData) {
 
   return {
     queryPosts,
+    res
   };
 }
 
