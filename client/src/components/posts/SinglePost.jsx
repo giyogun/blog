@@ -7,9 +7,10 @@ import React, {
 } from "react";
 import classes from "./SinglePost.module.css";
 import { RiEditLine, RiDeleteBin5Line } from "react-icons/ri";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import PostsContext from "../../store/postsContext";
 import useApiCall from "../../hooks/useApiCall";
+import { Link } from "react-router-dom";
 
 const postDateHandler = (x) => {
   let displayedDate;
@@ -43,46 +44,63 @@ const postDateHandler = (x) => {
 const SinglePost = () => {
   const params = useParams();
   const { postId } = params;
-  // const [post, setPost] = useState({});
-  // const [posts, setPosts] = useState([]);
+  const history = useHistory();
+  const [post, setPost] = useState({});
+  const [canEdit, setCanEdit] = useState(false);
+  const ls = localStorage.getItem("user");
 
   const ctx = useContext(PostsContext);
-  const { isLoggedIn, getPost, post } = ctx;
-  // const getAllPosts = useCallback((data) => {
-  //   // setPosts(data);
-  //   const singlePost = data.find((item) => item._id === postId);
+  const { isLoggedIn } = ctx;
 
-  //   // ctx.getPost(postId)
-  //   console.log(postId)
+  const getOnePost = useCallback((data) => {
+    console.log(data);
+    setPost(data.data);
+    setCanEdit(ls === data.data.username);
+  }, [ls]);
 
-  //   setPost(singlePost);
-  // }, [postId]);
+  const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
 
-  // const { queryPosts } = useApiCall(getAllPosts);
 
   useEffect(() => {
-    //   queryPosts({ method: "GET", url: `http://localhost:5000/api/posts` });
-    getPost(postId);
-  }, [getPost, postId]);
+    singlePostQuery({
+      method: "GET",
+      url: `http://localhost:5000/api/posts/${postId}`,
+    });
+  }, [singlePostQuery, postId]);
 
-  // setSinglePost(post);
+  const authorClickHandler = (name) => {
+    ctx.filterPostsByUser(name);
+    console.log(history);
+  };
+
+  const editPostHandler = () => {
+    history.push(`/write?edit=${postId}`);
+  };
+
   return (
     <Fragment>
       <div className={classes.singlePost}>
         <div className={classes.singlePostWrapper}>
-          <img className={classes.singlePostImg} src={post.photo} alt="" />
+          {post.photo && (
+            <img className={classes.singlePostImg} src={post.photo} alt="" />
+          )}
           <h1 className={classes.singlePostTitle}>
             {post.title}
-            {isLoggedIn && (
+            {isLoggedIn && canEdit && (
               <div className={classes.singlePostEdit}>
-                <RiEditLine className={classes.singlePostIcon} />
+                <RiEditLine className={classes.singlePostIcon} onClick={editPostHandler} />
                 <RiDeleteBin5Line className={classes.singlePostIcon} />
               </div>
             )}
           </h1>
           <div className={classes.singlePostInfo}>
-            <span className={classes.singlePostAuthor}>
-              Author: <b>{post.username}</b>
+            <span
+              className={classes.singlePostAuthor}
+              onClick={() => authorClickHandler(post.username)}
+            >
+              <Link to={`/?user=${post.username}`}>
+                Author: <b>{post.username}</b>
+              </Link>
             </span>
             <span className={classes.singlePostDate}>
               {postDateHandler(new Date(post.createdAt))}
@@ -91,27 +109,6 @@ const SinglePost = () => {
           <p className={classes.fullPost}>{post.description}</p>
         </div>
       </div>
-      {/* <div className={classes.singlePost}>
-        <div className={classes.singlePostWrapper}>
-          <img className={classes.singlePostImg} src={post.image} alt="" />
-          <h1 className={classes.singlePostTitle}>
-            {post.title}
-            {isLoggedIn && (
-              <div className={classes.singlePostEdit}>
-                <RiEditLine className={classes.singlePostIcon} />
-                <RiDeleteBin5Line className={classes.singlePostIcon} />
-              </div>
-            )}
-          </h1>
-          <div className={classes.singlePostInfo}>
-            <span className={classes.singlePostAuthor}>
-              Author: <b>{post.author}</b>
-            </span>
-            <span className={classes.singlePostDate}>{post.time}</span>
-          </div>
-          <p className={classes.fullPost}>{post.body}</p>
-        </div>
-      </div> */}
     </Fragment>
   );
 };

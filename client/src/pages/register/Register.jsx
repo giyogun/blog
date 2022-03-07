@@ -114,6 +114,8 @@ const Register = () => {
     }
   }, [clear, error]);
 
+  console.log(1);
+
   return (
     <div className={classes.reg}>
       <span className={classes.regTitle}>Create Account</span>

@@ -12,29 +12,36 @@ function useApiCall(applyData) {
         try {
           const response = await axios.get(config.url);
           // setDbPosts(response.data);
-          const data = response.data;
+          const data = response;
 
           applyData(data, cat, title,id);
-        } catch (error) {}
+        } catch (err) {
+          applyData(err.response.data)
+        }
       }
 
       if (config.method === "POST") {
         try {
           const response = await axios.post(config.url, config.body);
-          // setDbPosts(response.data);
           const data = response;
 
           applyData(data);
-          // setRes(data.statusText);
         } catch (err) {
-          // const x = new Error(err.message);
-          // setRes(err.response.data)
-          // console.log(err.response.data);
           applyData(err.response.data)
         }
       }
 
-      // const response = await axios.get('/posts');
+      if (config.method === "PUT") {
+        try {
+          const response = await axios.put(config.url, config.body);
+          const data = response;
+
+          applyData(data);
+        } catch (err) {
+          applyData(err.response.data)
+        }
+      }
+
     },
     [applyData]
   );

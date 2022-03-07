@@ -6,15 +6,18 @@ const PostsContext = React.createContext({
   blogPosts: [],
   searchedPosts: [],
   isLoggedIn: false,
-  post: {},
+  // post: {},
   error: null,
+  categories: [],
+  updatePost: () => {},
+  getCategories: function () {},
   clear: () => {},
   login: () => {},
   logout: () => {},
   filterPosts: () => {},
   search: () => {},
   resetPosts: () => {},
-  getPost: () => {},
+  filterPostsByUser: () => {},
   register: () => {},
 });
 
@@ -26,46 +29,54 @@ const capitalize = (text) => {
   return result;
 };
 
+const ls = localStorage.getItem("user");
+
 export const PostsProvider = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [posts, setPosts] = useState([]);
   const [posts1, setPosts1] = useState([]);
-  const [singlePost, setSinglePost] = useState({});
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cats, setCats] = useState([]);
+  // const [singlePost, setSinglePost] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(!!ls);
   const history = useHistory();
 
-  const getAllPosts = useCallback((data, a, b) => {
-    setPosts(data);
+  const getAllCats = useCallback((data) => {
+    setCats(data.data);
   }, []);
 
-  const getOnePost = useCallback((data, a, b, id) => {
-    const single = data.find((item) => item._id === id);
+  const updatePostFunc = useCallback((data) => {
+    console.log(data);
+  }, []);
 
-    setSinglePost(single);
+  const getAllPosts = useCallback((data) => {
+    console.log(data);
+    setPosts(data.data);
+  }, []);
+
+  const getPostsByUser = useCallback((data) => {
+    setPosts(data.data);
   }, []);
 
   const filterAllPosts = useCallback((data, cat) => {
-    const filteredPosts = data.filter((m) => m.categories.includes(cat));
+    const filteredPosts = data.data.filter((m) => m.categories.includes(cat));
 
     setPosts(filteredPosts);
   }, []);
 
   const searchPosts = useCallback((data, cat, title) => {
-    const posts = data.filter((m) => m.title.includes(capitalize(title)));
+    const posts = data.data.filter((m) => m.title.includes(capitalize(title)));
 
     setPosts1(posts);
   }, []);
 
   const loginApi = useCallback(
     (data) => {
-      console.log(data);
       if (data.statusText) {
         setIsLoggedIn(true);
         history.push("/write");
       } else {
         setErrorMessage(data);
       }
-      // setIsLoggedIn(!!data.status);
     },
     [history]
   );
@@ -74,13 +85,14 @@ export const PostsProvider = (props) => {
     if (!data.statusText) {
       setErrorMessage(data);
     }
-    
   };
 
   const { queryPosts: registerQuery } = useApiCall(registration);
 
   const { queryPosts } = useApiCall(getAllPosts);
-  const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
+  const { queryPosts: updatePostQuery } = useApiCall(updatePostFunc);
+  const { queryPosts: getCats } = useApiCall(getAllCats);
+  const { queryPosts: queryPostByUser } = useApiCall(getPostsByUser);
   const { queryPosts: postsSearch } = useApiCall(searchPosts);
   const { queryPosts: filterPosts } = useApiCall(filterAllPosts);
   const { queryPosts: userLogin } = useApiCall(loginApi);
@@ -89,13 +101,23 @@ export const PostsProvider = (props) => {
     queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
   }, [queryPosts]);
 
-  const getPostHandler = (id) => {
-    singlePostQuery(
-      { method: "GET", url: `${BASE_URL}/posts` },
-      null,
-      null,
-      id
-    );
+  useEffect(() => {
+    getCats({ method: "GET", url: `${BASE_URL}/categories` });
+  }, [getCats]);
+
+  const getPostsByUserHandler = (name) => {
+    queryPostByUser({
+      method: "GET",
+      url: `http://localhost:5000/api/posts?user=${name}`,
+    });
+  };
+
+  const updatePostHandler = (config) => {
+    updatePostQuery({
+      method: "PUT",
+      url: `http://localhost:5000/api/posts/${config.id}`,
+      body: config
+    });
   };
 
   const registrationHandler = (username, email, password) => {
@@ -108,35 +130,29 @@ export const PostsProvider = (props) => {
         password,
       },
     });
-    // setPass(password);
   };
 
-  const loginHandler = (em, pass) => {
+  const loginHandler = (username, pass) => {
     userLogin({
       method: "POST",
-      body: { email: em, password: pass },
+      body: { username, password: pass },
       url: `${BASE_URL}/auth/login`,
     });
-    // console.log(res);
   };
 
   const logoutHandler = () => {
-    // postsDispatch({ type: "LOGOUT" });
     setIsLoggedIn(false);
   };
 
   const filterPostsHandler = (category) => {
-    // postsDispatch({ type: "FILTER", payload: category });
     filterPosts({ method: "GET", url: `${BASE_URL}/posts` }, category);
   };
 
   const searchPostsHandler = (enteredText) => {
-    // postsDispatch({ type: "FILTER", payload: category });
     postsSearch({ method: "GET", url: `${BASE_URL}/posts` }, null, enteredText);
   };
 
   const resetPostsHandler = () => {
-    // postsDispatch({ type: "RESET" });
     queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
     setPosts1([]);
   };
@@ -145,19 +161,27 @@ export const PostsProvider = (props) => {
     setErrorMessage(null);
   };
 
+  const getCategoriesHandler = () => {
+    getCats({ method: "GET", url: `${BASE_URL}/categories` });
+  };
+
   const contextData = {
     blogPosts: posts,
     searchedPosts: posts1,
     isLoggedIn: isLoggedIn,
-    post: singlePost,
+    // post: singlePost,
     error: errorMessage,
+    categories: cats,
+    updatePost: updatePostHandler,
+    getCategories: getCategoriesHandler,
     clear: clearErrorMessage,
     login: loginHandler,
     logout: logoutHandler,
     filterPosts: filterPostsHandler,
     search: searchPostsHandler,
     resetPosts: resetPostsHandler,
-    getPost: getPostHandler,
+    filterPostsByUser: getPostsByUserHandler,
+    // getPost: getPostHandler,
     register: registrationHandler,
   };
   return (

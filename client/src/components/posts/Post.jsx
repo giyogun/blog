@@ -50,21 +50,27 @@ const Post = () => {
     <Fragment>
       {ctx.blogPosts.map((post) => (
         <div className={classes.post} key={post._id}>
-          <img className={classes.postImg} src={post.photo} alt="" />
+          {post.photo && (
+            <img className={classes.postImg} src={post.photo} alt="" />
+          )}
           <div className={classes.postInfo}>
             <div className={classes.postCats}>
-              <span
+                {post.categories.map((c) => (
+                  <span
+                    key={Math.random()}
+                    className={classes.postCat}
+                    onClick={() => filterPostsHandler(c)}
+                  >
+                    {c}
+                  </span>
+                ))}
+              {/* <span
+                // key={c._id}
                 className={classes.postCat}
                 onClick={() => filterPostsHandler(post.categories[0])}
               >
                 {post.categories[0]}
-              </span>
-              <span
-                className={classes.postCat}
-                onClick={() => filterPostsHandler(post.categories[1])}
-              >
-                {post.categories[1]}
-              </span>
+              </span> */}
             </div>
             <Link to={`/posts/${post._id}`}>
               <span className={classes.postTitle}>{post.title}</span>
@@ -78,34 +84,6 @@ const Post = () => {
           </div>
         </div>
       ))}
-      {/* {data.map((post) => (
-        <div className={classes.post} key={post.id}>
-          <img className={classes.postImg} src={post.image} alt="" />
-          <div className={classes.postInfo}>
-            <div className={classes.postCats}>
-              <span
-                className={classes.postCat}
-                onClick={() => filterPostsHandler(post.category[0])}
-              >
-                {post.category[0]}
-              </span>
-              <span
-                className={classes.postCat}
-                onClick={() => filterPostsHandler(post.category[1])}
-              >
-                {post.category[1]}
-              </span>
-            </div>
-            <Link to={`/posts/${post.id}`}>
-              <span className={classes.postTitle}>{post.title}</span>
-            </Link>
-            <hr />
-            <span className={classes.postDate}>{post.time}</span>
-
-            <p className={classes.postDesc}>{post.body}</p>
-          </div>
-        </div>
-      ))} */}
     </Fragment>
   );
 };

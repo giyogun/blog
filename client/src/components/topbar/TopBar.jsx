@@ -69,7 +69,13 @@ const TopBar = () => {
             </NavLink>
           </li>
           {ctx.isLoggedIn && (
-            <li className={classes.topListItem} onClick={ctx.logout}>
+            <li
+              className={classes.topListItem}
+              onClick={() => {
+                ctx.logout();
+                localStorage.removeItem("user");
+              }}
+            >
               <NavLink to="/">LOGOUT</NavLink>
             </li>
           )}

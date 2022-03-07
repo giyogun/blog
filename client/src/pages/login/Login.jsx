@@ -1,42 +1,52 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import PostsContext from "../../store/postsContext";
 import classes from "./Login.module.css";
 
 const Login = () => {
+  const [lsValue, setLsValue] = useState();
   const ctx = useContext(PostsContext);
-  const {error, clear} = ctx
+  const { error, clear } = ctx;
+  const { isLoggedIn } = ctx;
   const history = useHistory();
-  const email = useRef();
+  const username = useRef();
   const password = useRef();
 
-  useEffect(()=>{
+  useEffect(() => {
     if (error) {
-      email.current.focus();
+      username.current.focus();
       setTimeout(() => {
         clear();
       }, 5000);
     }
-  },[clear, error])
+  }, [clear, error]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      localStorage.setItem("user", lsValue)
+    }
+    console.log(1);
+  }, [isLoggedIn, lsValue]);
 
   const loginHandler = (e) => {
     e.preventDefault();
-    const enteredEmail = email.current.value;
+    const enteredUsername = username.current.value;
     const enteredPassword = password.current.value;
 
-    ctx.login(enteredEmail, enteredPassword);
+    ctx.login(enteredUsername, enteredPassword);
+    setLsValue(enteredUsername);
   };
-  
+
   return (
     <div className={classes.login}>
       <span className={classes.loginTitle}>Login</span>
       <form className={classes.loginForm} onSubmit={loginHandler}>
-        <label>Email</label>
+        <label>Username</label>
         <input
           className={classes.loginInput}
-          type="email"
-          placeholder="Enter your email..."
-          ref={email}
+          type="text"
+          placeholder="Enter your username..."
+          ref={username}
         />
         <label>Password</label>
         <input className={classes.loginInput} type="password" ref={password} />

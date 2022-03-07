@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router";
 import classes from "./Sidebar.module.css";
 import {
@@ -13,14 +13,8 @@ import PostsContext from "../../store/postsContext";
 
 const Sidebar = () => {
   const ctx = useContext(PostsContext);
-  const { filterPosts } = ctx;
+  const { filterPosts, categories } = ctx;
 
-  const musicRef = useRef();
-  const lifeRef = useRef();
-  const styleRef = useRef();
-  const sportsRef = useRef();
-  const techRef = useRef();
-  const cinemaRef = useRef();
   const history = useHistory();
 
   return (
@@ -39,70 +33,19 @@ const Sidebar = () => {
       <div className={classes.sidebarItem}>
         <span className={classes.sidebarTitle}>CATEGORIES</span>
         <ul className={classes.sidebarList}>
-          <li
-            className={classes.sidebarListItem}
-            ref={lifeRef}
-            onClick={() => {
-              history.push(`/?cat=${lifeRef.current.innerText}`);
+          {categories.map((c) => (
+            <li
+              key={c._id}
+              className={classes.sidebarListItem}
+              onClick={() => {
+                history.push(`/?cat=${c.name}`);
 
-              filterPosts(lifeRef.current.innerText);
-            }}
-          >
-            Life
-          </li>
-          <li
-            className={classes.sidebarListItem}
-            ref={musicRef}
-            onClick={() => {
-              history.push(`/?cat=${musicRef.current.innerText}`);
-
-              filterPosts(musicRef.current.innerText);
-            }}
-          >
-            Music
-          </li>
-          <li
-            className={classes.sidebarListItem}
-            ref={styleRef}
-            onClick={() => {
-              history.push(`/?cat=${sportsRef.current.innerText}`);
-
-              filterPosts(styleRef.current.innerText);
-            }}
-          >
-            Style
-          </li>
-          <li
-            className={classes.sidebarListItem}
-            ref={sportsRef}
-            onClick={() => {
-              history.push(`/?cat=${sportsRef.current.innerText}`);
-              filterPosts(sportsRef.current.innerText);
-            }}
-          >
-            Sport
-          </li>
-          <li
-            className={classes.sidebarListItem}
-            ref={techRef}
-            onClick={() => {
-              history.push(`/?cat=${techRef.current.innerText}`);
-              filterPosts(techRef.current.innerText);
-            }}
-          >
-            Tech
-          </li>
-          <li
-            className={classes.sidebarListItem}
-            ref={cinemaRef}
-            onClick={() => {
-              history.push(`/?cat=${cinemaRef.current.innerText}`);
-
-              filterPosts(cinemaRef.current.innerText);
-            }}
-          >
-            Cinema
-          </li>
+                filterPosts(c.name);
+              }}
+            >
+              {c.name}
+            </li>
+          ))}
         </ul>
       </div>
       <div className={classes.sidebarItem}>

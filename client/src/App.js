@@ -19,11 +19,8 @@ function App() {
         <Route path="/" exact>
           <Home />
         </Route>
-        {/* <Route path="/posts" exact>
-          <Home />
-        </Route> */}
         <Route path="/register">
-          <Register />
+          {ctx.isLoggedIn ? <Redirect to="/settings" /> : <Register />}
         </Route>
         <Route path="/login">
           <Login />
