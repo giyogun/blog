@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import classes from "./Settings.module.css";
 import { FaRegUserCircle } from "react-icons/fa";
+import useApiCall from "../../hooks/useApiCall";
+
 
 const Settings = () => {
+  const ls = JSON.parse(localStorage.getItem("user"));
   return (
     <div className={classes.settings}>
       <div className={classes.settingsWrapper}>
@@ -26,9 +29,9 @@ const Settings = () => {
             <input type="file" id="fileInput" style={{ display: "none" }} />
           </div>
           <label>Username</label>
-          <input type="text" placeholder="Godwin" />
+          <input type="text" placeholder={ls.username} />
           <label>Email</label>
-          <input type="email" placeholder="giyogun@gmail.com" />
+          <input type="email" placeholder={ls.email} />
           <label>Password</label>
           <input type="password" />
           <button className={classes.settingsSubmit}>Update</button>

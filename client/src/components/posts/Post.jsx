@@ -41,6 +41,8 @@ const Post = () => {
 
   const history = useHistory();
 
+  const publicFolder = "http://localhost:5000/images/"
+
   const filterPostsHandler = (cat) => {
     ctx.filterPosts(cat);
     history.push(`?cat=${cat}`);
@@ -51,7 +53,7 @@ const Post = () => {
       {ctx.blogPosts.map((post) => (
         <div className={classes.post} key={post._id}>
           {post.photo && (
-            <img className={classes.postImg} src={post.photo} alt="" />
+            <img className={classes.postImg} src={publicFolder + post.photo} alt="" />
           )}
           <div className={classes.postInfo}>
             <div className={classes.postCats}>

@@ -4,10 +4,10 @@ import PostsContext from "../../store/postsContext";
 import classes from "./Login.module.css";
 
 const Login = () => {
-  const [lsValue, setLsValue] = useState();
+  // const [lsValue, setLsValue] = useState({});
   const ctx = useContext(PostsContext);
   const { error, clear } = ctx;
-  const { isLoggedIn } = ctx;
+  // const { isLoggedIn } = ctx;
   const history = useHistory();
   const username = useRef();
   const password = useRef();
@@ -21,12 +21,11 @@ const Login = () => {
     }
   }, [clear, error]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      localStorage.setItem("user", lsValue)
-    }
-    console.log(1);
-  }, [isLoggedIn, lsValue]);
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     localStorage.setItem("user", lsValue)
+  //   }
+  // }, [isLoggedIn, lsValue]);
 
   const loginHandler = (e) => {
     e.preventDefault();
@@ -34,7 +33,7 @@ const Login = () => {
     const enteredPassword = password.current.value;
 
     ctx.login(enteredUsername, enteredPassword);
-    setLsValue(enteredUsername);
+    // setLsValue(enteredUsername);
   };
 
   return (

@@ -23,7 +23,7 @@ function App() {
           {ctx.isLoggedIn ? <Redirect to="/settings" /> : <Register />}
         </Route>
         <Route path="/login">
-          <Login />
+          {!ctx.isLoggedIn ? <Login /> : <Redirect to="/write" />}
         </Route>
         <Route path="/settings">
           {ctx.isLoggedIn ? <Settings /> : <Redirect to="/login" />}

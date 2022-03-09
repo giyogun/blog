@@ -1,4 +1,11 @@
-import React, { useContext, useRef } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import classes from "./TopBar.module.css";
 import {
   FaFacebookSquare,
@@ -7,24 +14,42 @@ import {
   FaInstagram,
   FaSearch,
 } from "react-icons/fa";
+import { ImUser } from "react-icons/im";
 
-import profilePic from "../assets/photo5776120754558056466.jpg";
+// import profilePic from "../assets/photo5776120754558056466.jpg";
 import { Link, NavLink } from "react-router-dom";
 import PostsContext from "../../store/postsContext";
 
+// const ls = JSON.parse(localStorage.getItem("user"));
 const TopBar = () => {
-  // const resetHandler = (data) => {
-  //   // setFilteredPosts(data);
-  // };
+  // const ls = localStorage.getItem("user");
+  const ls = JSON.parse(localStorage.getItem("user"));
+  const publicFolder = "http://localhost:5000/images/";
 
   const searchRef = useRef();
   const ctx = useContext(PostsContext);
+
+  let profilePic = <ImUser className={classes.topImg} />;
+
+  if (ls) {
+    if (ls.profilePic) {
+      profilePic = (
+        <img
+          src={publicFolder + ls.profilePic}
+          alt="profile"
+          className={classes.topImg}
+        />
+      );
+    }
+  }
 
   const searchPostsHandler = (e) => {
     e.preventDefault();
     const enteredText = searchRef.current.value;
     ctx.search(enteredText);
   };
+
+  console.log(ls);
   return (
     <div className={classes.top}>
       <div className={classes.topLeft}>
@@ -73,7 +98,7 @@ const TopBar = () => {
               className={classes.topListItem}
               onClick={() => {
                 ctx.logout();
-                localStorage.removeItem("user");
+                // localStorage.removeItem("user");
               }}
             >
               <NavLink to="/">LOGOUT</NavLink>
@@ -84,7 +109,7 @@ const TopBar = () => {
       <div className={classes.topRight}>
         <div className={classes.dropdown}>
           {ctx.isLoggedIn ? (
-            <img src={profilePic} alt="profile" className={classes.topImg} />
+            profilePic
           ) : (
             <Link to="/login" className={classes.link}>
               LOGIN

@@ -9,6 +9,7 @@ const PostsContext = React.createContext({
   // post: {},
   error: null,
   categories: [],
+  createPost: () => {},
   updatePost: () => {},
   getCategories: function () {},
   clear: () => {},
@@ -29,7 +30,7 @@ const capitalize = (text) => {
   return result;
 };
 
-const ls = localStorage.getItem("user");
+const ls = JSON.parse(localStorage.getItem("user"));
 
 export const PostsProvider = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -40,56 +41,68 @@ export const PostsProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!ls);
   const history = useHistory();
 
-  const getAllCats = useCallback((data) => {
-    setCats(data.data);
+  const getAllCats = useCallback((res) => {
+    setCats(res.data);
   }, []);
 
-  const updatePostFunc = useCallback((data) => {
-    console.log(data);
+  const createPostFunc = useCallback(
+    (res) => {
+      if (res.statusText) {
+        console.log(res);
+        history.replace("/posts/" + res.data._id);
+      }
+    },
+    [history]
+  );
+  const updatePostFunc = useCallback((res) => {
+    console.log(res);
   }, []);
 
-  const getAllPosts = useCallback((data) => {
-    console.log(data);
-    setPosts(data.data);
+  const getAllPosts = useCallback((res) => {
+    console.log(res);
+    setPosts(res.data);
   }, []);
 
-  const getPostsByUser = useCallback((data) => {
-    setPosts(data.data);
+  const getPostsByUser = useCallback((res) => {
+    setPosts(res.data);
   }, []);
 
-  const filterAllPosts = useCallback((data, cat) => {
-    const filteredPosts = data.data.filter((m) => m.categories.includes(cat));
+  const filterAllPosts = useCallback((res, cat) => {
+    const filteredPosts = res.data.filter((m) => m.categories.includes(cat));
 
     setPosts(filteredPosts);
   }, []);
 
-  const searchPosts = useCallback((data, cat, title) => {
-    const posts = data.data.filter((m) => m.title.includes(capitalize(title)));
+  const searchPosts = useCallback((res, cat, title) => {
+    const posts = res.data.filter((m) => m.title.includes(capitalize(title)));
 
     setPosts1(posts);
   }, []);
 
   const loginApi = useCallback(
-    (data) => {
-      if (data.statusText) {
+    (res) => {
+      if (res.statusText) {
+        localStorage.setItem("user", JSON.stringify(res.data));
+
         setIsLoggedIn(true);
         history.push("/write");
       } else {
-        setErrorMessage(data);
+        setErrorMessage(res);
       }
     },
     [history]
   );
 
-  const registration = (data) => {
-    if (!data.statusText) {
-      setErrorMessage(data);
+  const registration = (res) => {
+    if (!res.statusText) {
+      setErrorMessage(res);
     }
   };
 
   const { queryPosts: registerQuery } = useApiCall(registration);
 
   const { queryPosts } = useApiCall(getAllPosts);
+  const { queryPosts: createPostQuery } = useApiCall(createPostFunc);
   const { queryPosts: updatePostQuery } = useApiCall(updatePostFunc);
   const { queryPosts: getCats } = useApiCall(getAllCats);
   const { queryPosts: queryPostByUser } = useApiCall(getPostsByUser);
@@ -112,11 +125,19 @@ export const PostsProvider = (props) => {
     });
   };
 
+  const createPostHandler = (config) => {
+    createPostQuery({
+      method: "POST",
+      url: `http://localhost:5000/api/posts/`,
+      body: config,
+    });
+  };
+
   const updatePostHandler = (config) => {
     updatePostQuery({
       method: "PUT",
       url: `http://localhost:5000/api/posts/${config.id}`,
-      body: config
+      body: config,
     });
   };
 
@@ -142,6 +163,7 @@ export const PostsProvider = (props) => {
 
   const logoutHandler = () => {
     setIsLoggedIn(false);
+    localStorage.removeItem("user");
   };
 
   const filterPostsHandler = (category) => {
@@ -172,6 +194,7 @@ export const PostsProvider = (props) => {
     // post: singlePost,
     error: errorMessage,
     categories: cats,
+    createPost: createPostHandler,
     updatePost: updatePostHandler,
     getCategories: getCategoriesHandler,
     clear: clearErrorMessage,

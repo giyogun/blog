@@ -11,37 +11,40 @@ import { useHistory, useLocation } from "react-router";
 import useApiCall from "../../hooks/useApiCall";
 import PostsContext from "../../store/postsContext";
 
-const ls = localStorage.getItem("user");
-
 const Write = () => {
+  const ls = JSON.parse(localStorage.getItem("user"));
   const ctx = useContext(PostsContext);
+  const [selectedFile, setSelectedFile] = useState();
   const location = useLocation();
   const history = useHistory();
   const [post, setPost] = useState({});
-  const [canEdit, setCanEdit] = useState(false);
+  const [isEditState, setIsEditState] = useState(false);
   const postId = location.search.split("=")[1];
   const titleRef = useRef();
   const bodyRef = useRef();
+  const publicFolder = "http://localhost:5000/images/";
+
+  const uploadImage = useCallback((data) => {}, []);
+  const { username } = ls;
 
   const getOnePost = useCallback(
     (data) => {
       if (data.statusText) {
-        const x = data.data.username === ls;
+        const x = data.data.username === username;
         if (!x) {
           history.push("/write");
         }
-        setCanEdit(x);
+        setIsEditState(x);
         setPost(data.data);
       } else {
         history.push("/write");
       }
     },
-    [history]
+    [history, username]
   );
 
-  console.log(postId);
-
   const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
+  const { queryPosts: uploadImageQuery } = useApiCall(uploadImage);
 
   useEffect(() => {
     if (postId) {
@@ -52,11 +55,13 @@ const Write = () => {
     }
   }, [singlePostQuery, postId]);
 
+  console.log(username);
+
   const updatePostHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
     const newBody = bodyRef.current.value;
-    if (canEdit) {
+    if (isEditState) {
       console.log(1);
       ctx.updatePost({
         title: newTitle,
@@ -64,30 +69,63 @@ const Write = () => {
         id: post._id,
         username: post.username,
       });
+    } else {
+      const newPost = {
+        title: newTitle,
+        description: newBody,
+        username: username,
+      };
+      if (selectedFile) {
+        const data = new FormData();
+        const filename = Date.now() + selectedFile.name;
+        data.append("name", filename);
+        data.append("file", selectedFile);
+        newPost.photo = filename;
+        uploadImageQuery({
+          url: `http://localhost:5000/api/upload`,
+          method: "POST",
+          body: data,
+        });
+      }
+      ctx.createPost(newPost);
     }
+    console.log(isEditState);
+  };
+
+  const changeHandler = (e) => {
+    setSelectedFile(e.target.files[0]);
   };
 
   return (
     <div className={classes.write}>
+      (
       <img
         src={
-          canEdit
-            ? post.photo
-            : "https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+          isEditState
+            ? publicFolder + post.photo
+            : selectedFile
+            ? URL.createObjectURL(selectedFile)
+            : ""
         }
         alt=""
         className={classes.writeImg}
       />
+      )
       <form className={classes.writeForm} onSubmit={updatePostHandler}>
         <div className={classes.writeFormGroup}>
           <label htmlFor="fileInput">
             <MdAddCircleOutline className={classes.writeIcon} />
           </label>
-          <input type="file" id="fileInput" style={{ display: "none" }} />
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            onChange={changeHandler}
+          />
           <input
             type="text"
-            placeholder={!canEdit ? "Title" : ""}
-            defaultValue={canEdit ? post.title : ""}
+            placeholder={!isEditState ? "Title" : ""}
+            defaultValue={isEditState ? post.title : ""}
             ref={titleRef}
             className={classes.writeInput}
             autoFocus={true}
@@ -95,8 +133,8 @@ const Write = () => {
         </div>
         <div className={classes.writeFormGroup}>
           <textarea
-            placeholder={!canEdit ? "Tell your story..." : ""}
-            defaultValue={canEdit ? post.description : ""}
+            placeholder={!isEditState ? "Tell your story..." : ""}
+            defaultValue={isEditState ? post.description : ""}
             ref={bodyRef}
             type="text"
             className={`${classes.writeInput} ${classes.writeText}`}

@@ -41,13 +41,15 @@ const postDateHandler = (x) => {
   return displayedDate;
 };
 
+const ls = JSON.parse(localStorage.getItem("user"));
+
 const SinglePost = () => {
   const params = useParams();
   const { postId } = params;
   const history = useHistory();
   const [post, setPost] = useState({});
   const [canEdit, setCanEdit] = useState(false);
-  const ls = localStorage.getItem("user");
+  const publicFolder = "http://localhost:5000/images/";
 
   const ctx = useContext(PostsContext);
   const { isLoggedIn } = ctx;
@@ -55,12 +57,12 @@ const SinglePost = () => {
   const getOnePost = useCallback((data) => {
     console.log(data);
     setPost(data.data);
-    setCanEdit(ls === data.data.username);
-  }, [ls]);
+    setCanEdit(ls.username === data.data.username);
+  }, []);
 
   const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
 
-
+  console.log(ls);
   useEffect(() => {
     singlePostQuery({
       method: "GET",
@@ -82,13 +84,20 @@ const SinglePost = () => {
       <div className={classes.singlePost}>
         <div className={classes.singlePostWrapper}>
           {post.photo && (
-            <img className={classes.singlePostImg} src={post.photo} alt="" />
+            <img
+              className={classes.singlePostImg}
+              src={publicFolder + post.photo}
+              alt=""
+            />
           )}
           <h1 className={classes.singlePostTitle}>
             {post.title}
             {isLoggedIn && canEdit && (
               <div className={classes.singlePostEdit}>
-                <RiEditLine className={classes.singlePostIcon} onClick={editPostHandler} />
+                <RiEditLine
+                  className={classes.singlePostIcon}
+                  onClick={editPostHandler}
+                />
                 <RiDeleteBin5Line className={classes.singlePostIcon} />
               </div>
             )}

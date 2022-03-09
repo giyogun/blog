@@ -12,9 +12,8 @@ function useApiCall(applyData) {
         try {
           const response = await axios.get(config.url);
           // setDbPosts(response.data);
-          const data = response;
 
-          applyData(data, cat, title,id);
+          applyData(response, cat, title,id);
         } catch (err) {
           applyData(err.response.data)
         }
@@ -23,9 +22,8 @@ function useApiCall(applyData) {
       if (config.method === "POST") {
         try {
           const response = await axios.post(config.url, config.body);
-          const data = response;
 
-          applyData(data);
+          applyData(response);
         } catch (err) {
           applyData(err.response.data)
         }
@@ -34,9 +32,8 @@ function useApiCall(applyData) {
       if (config.method === "PUT") {
         try {
           const response = await axios.put(config.url, config.body);
-          const data = response;
 
-          applyData(data);
+          applyData(response);
         } catch (err) {
           applyData(err.response.data)
         }

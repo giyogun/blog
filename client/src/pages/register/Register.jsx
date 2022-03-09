@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import classes from "./Register.module.css";
 import { GrClose } from "react-icons/gr";
 import { useHistory } from "react-router";
@@ -21,7 +21,6 @@ const Register = () => {
     inputChangeHandler: nameChangeHandler,
     inputBlurHandler: nameBlurHandler,
     validity: nameValueIsValid,
-    reset: resetnameStates,
     submit: submitUsername,
   } = useClientVal(validityArg);
 
@@ -31,7 +30,6 @@ const Register = () => {
     inputBlurHandler: emailBlurHandler,
     inputChangeHandler: emailChangeHandler,
     validity: emailValueIsValid,
-    reset: resetEmailStates,
     submit: submitEmail,
   } = useClientVal((value) => value.trim() !== "" && emailCheck.test(value));
 
@@ -41,7 +39,6 @@ const Register = () => {
     inputBlurHandler: passwordBlurHandler,
     inputChangeHandler: passwordChangeHandler,
     validity: passwordValueIsValid,
-    reset: resetPasswordStates,
     submit: submitPassword,
   } = useClientVal((value) => value.trim() !== "" && passwordCheck.test(value));
 
@@ -114,7 +111,6 @@ const Register = () => {
     }
   }, [clear, error]);
 
-  console.log(1);
 
   return (
     <div className={classes.reg}>
