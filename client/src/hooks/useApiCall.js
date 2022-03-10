@@ -37,6 +37,16 @@ function useApiCall(applyData) {
         } catch (err) {
           applyData(err.response.data)
         }
+      } 
+
+      if (config.method === "DELETE") {
+        try {
+          const response = await axios.delete(config.url,  {data: config.body});
+
+          applyData(response);
+        } catch (err) {
+          applyData(err.response.data)
+        }
       }
 
     },

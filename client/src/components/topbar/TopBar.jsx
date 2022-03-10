@@ -1,10 +1,6 @@
 import React, {
-  useCallback,
   useContext,
-  useEffect,
-  useMemo,
   useRef,
-  useState,
 } from "react";
 import classes from "./TopBar.module.css";
 import {
@@ -16,13 +12,10 @@ import {
 } from "react-icons/fa";
 import { ImUser } from "react-icons/im";
 
-// import profilePic from "../assets/photo5776120754558056466.jpg";
 import { Link, NavLink } from "react-router-dom";
 import PostsContext from "../../store/postsContext";
 
-// const ls = JSON.parse(localStorage.getItem("user"));
 const TopBar = () => {
-  // const ls = localStorage.getItem("user");
   const ls = JSON.parse(localStorage.getItem("user"));
   const publicFolder = "http://localhost:5000/images/";
 
@@ -49,7 +42,6 @@ const TopBar = () => {
     ctx.search(enteredText);
   };
 
-  console.log(ls);
   return (
     <div className={classes.top}>
       <div className={classes.topLeft}>

@@ -14,7 +14,7 @@ import PostsContext from "../../store/postsContext";
 const Write = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const ctx = useContext(PostsContext);
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState("");
   const location = useLocation();
   const history = useHistory();
   const [post, setPost] = useState({});
@@ -28,14 +28,14 @@ const Write = () => {
   const { username } = ls;
 
   const getOnePost = useCallback(
-    (data) => {
-      if (data.statusText) {
-        const x = data.data.username === username;
+    (res) => {
+      if (res.statusText) {
+        const x = res.data.username === username;
         if (!x) {
           history.push("/write");
         }
         setIsEditState(x);
-        setPost(data.data);
+        setPost(res.data);
       } else {
         history.push("/write");
       }
@@ -55,20 +55,35 @@ const Write = () => {
     }
   }, [singlePostQuery, postId]);
 
-  console.log(username);
+  console.log(isEditState);
 
   const updatePostHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
     const newBody = bodyRef.current.value;
+    // const newImg = URL.createObjectURL(selectedFile);
     if (isEditState) {
       console.log(1);
-      ctx.updatePost({
+      const updatedPost = {
         title: newTitle,
         description: newBody,
         id: post._id,
         username: post.username,
-      });
+        // photo: newImg
+      };
+      if (selectedFile) {
+        const data = new FormData();
+        const filename = Date.now() + selectedFile.name;
+        data.append("name", filename);
+        data.append("file", selectedFile);
+        updatedPost.photo = filename;
+        uploadImageQuery({
+          url: `http://localhost:5000/api/upload`,
+          method: "POST",
+          body: data,
+        });
+      }
+      ctx.updatePost(updatedPost);
     } else {
       const newPost = {
         title: newTitle,
@@ -96,20 +111,38 @@ const Write = () => {
     setSelectedFile(e.target.files[0]);
   };
 
+  let pic;
+  if (postId) {
+    pic = publicFolder + post.photo;
+    if (!post.photo) {
+      pic =
+        "https://presentageministries.org/wp-content/uploads/2019/07/placeholder.png";
+    }
+    if (selectedFile) {
+      pic = URL.createObjectURL(selectedFile);
+    }
+  } else {
+    pic =
+      "https://presentageministries.org/wp-content/uploads/2019/07/placeholder.png";
+    if (selectedFile) {
+      pic = URL.createObjectURL(selectedFile);
+    }
+  }
+
   return (
     <div className={classes.write}>
       (
-      <img
-        src={
-          isEditState
-            ? publicFolder + post.photo
-            : selectedFile
-            ? URL.createObjectURL(selectedFile)
-            : ""
-        }
-        alt=""
-        className={classes.writeImg}
-      />
+      {
+        <img
+          // src="https://presentageministries.org/wp-content/uploads/2019/07/placeholder.png"
+          // src={
+          //  selectedFile ? URL.createObjectURL(selectedFile) : isEditState && publicFolder + post.photo
+          // }
+          src={pic}
+          alt=""
+          className={classes.writeImg}
+        />
+      }
       )
       <form className={classes.writeForm} onSubmit={updatePostHandler}>
         <div className={classes.writeFormGroup}>

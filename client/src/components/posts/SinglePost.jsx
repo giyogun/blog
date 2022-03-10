@@ -11,6 +11,7 @@ import { useHistory, useParams } from "react-router";
 import PostsContext from "../../store/postsContext";
 import useApiCall from "../../hooks/useApiCall";
 import { Link } from "react-router-dom";
+import DeleteModal from "../UI/DeleteModal";
 
 const postDateHandler = (x) => {
   let displayedDate;
@@ -41,34 +42,40 @@ const postDateHandler = (x) => {
   return displayedDate;
 };
 
-const ls = JSON.parse(localStorage.getItem("user"));
-
 const SinglePost = () => {
+  const ls = JSON.parse(localStorage.getItem("user"));
+  const x = ls ? ls.username : null;
   const params = useParams();
   const { postId } = params;
   const history = useHistory();
   const [post, setPost] = useState({});
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const publicFolder = "http://localhost:5000/images/";
 
   const ctx = useContext(PostsContext);
   const { isLoggedIn } = ctx;
 
-  const getOnePost = useCallback((data) => {
-    console.log(data);
-    setPost(data.data);
-    setCanEdit(ls.username === data.data.username);
+  const getOnePost = useCallback((res) => {
+    console.log(res);
+    setPost(res.data);
   }, []);
 
   const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
 
-  console.log(ls);
   useEffect(() => {
     singlePostQuery({
       method: "GET",
       url: `http://localhost:5000/api/posts/${postId}`,
     });
   }, [singlePostQuery, postId]);
+
+  useEffect(() => {
+    setCanEdit(x === post.username);
+  }, [x, post.username]);
+
+  console.log(x === post.username);
+  console.log(post.id);
 
   const authorClickHandler = (name) => {
     ctx.filterPostsByUser(name);
@@ -98,7 +105,21 @@ const SinglePost = () => {
                   className={classes.singlePostIcon}
                   onClick={editPostHandler}
                 />
-                <RiDeleteBin5Line className={classes.singlePostIcon} />
+                <RiDeleteBin5Line
+                  className={classes.singlePostIcon}
+                  onClick={() => setShowDeletePrompt(true)}
+                />
+                {showDeletePrompt && (
+                  <DeleteModal
+                    close={() => setShowDeletePrompt(false)}
+                    deletePost={() =>
+                      ctx.deletePost({
+                        username: post.username,
+                        id: post._id,
+                      })
+                    }
+                  />
+                )}
               </div>
             )}
           </h1>

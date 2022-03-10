@@ -11,6 +11,7 @@ const PostsContext = React.createContext({
   categories: [],
   createPost: () => {},
   updatePost: () => {},
+  deletePost: () => {},
   getCategories: function () {},
   clear: () => {},
   login: () => {},
@@ -42,12 +43,14 @@ export const PostsProvider = (props) => {
   const history = useHistory();
 
   const getAllCats = useCallback((res) => {
-    setCats(res.data);
+    if (res.statusText === "OK") {
+      setCats(res.data);
+    }
   }, []);
 
   const createPostFunc = useCallback(
     (res) => {
-      if (res.statusText) {
+      if (res.statusText === "OK") {
         console.log(res);
         history.replace("/posts/" + res.data._id);
       }
@@ -55,17 +58,35 @@ export const PostsProvider = (props) => {
     [history]
   );
   const updatePostFunc = useCallback((res) => {
+    if (res.statusText === "OK") {
+      history.replace("/posts/" + res.data._id);
+    }
     console.log(res);
-  }, []);
+  }, [history]);
 
   const getAllPosts = useCallback((res) => {
     console.log(res);
-    setPosts(res.data);
+    if (res.statusText === "OK") {
+      setPosts(res.data);
+    }
   }, []);
 
   const getPostsByUser = useCallback((res) => {
-    setPosts(res.data);
+    if (res.statusText === "OK") {
+      setPosts(res.data);
+    }
   }, []);
+
+  const deleteSinglePost = useCallback(
+    (res) => {
+      if (res.statusText === "OK") {
+        console.log("Post Deleted");
+        history.replace("/");
+      }
+      console.log(res);
+    },
+    [history]
+  );
 
   const filterAllPosts = useCallback((res, cat) => {
     const filteredPosts = res.data.filter((m) => m.categories.includes(cat));
@@ -81,7 +102,7 @@ export const PostsProvider = (props) => {
 
   const loginApi = useCallback(
     (res) => {
-      if (res.statusText) {
+      if (res.statusText === "OK") {
         localStorage.setItem("user", JSON.stringify(res.data));
 
         setIsLoggedIn(true);
@@ -94,7 +115,7 @@ export const PostsProvider = (props) => {
   );
 
   const registration = (res) => {
-    if (!res.statusText) {
+    if (!res.statusText === "OK") {
       setErrorMessage(res);
     }
   };
@@ -109,6 +130,7 @@ export const PostsProvider = (props) => {
   const { queryPosts: postsSearch } = useApiCall(searchPosts);
   const { queryPosts: filterPosts } = useApiCall(filterAllPosts);
   const { queryPosts: userLogin } = useApiCall(loginApi);
+  const { queryPosts: deletePostQuery } = useApiCall(deleteSinglePost);
 
   useEffect(() => {
     queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
@@ -139,6 +161,15 @@ export const PostsProvider = (props) => {
       url: `http://localhost:5000/api/posts/${config.id}`,
       body: config,
     });
+  };
+
+  const deletePostHandler = (config) => {
+    deletePostQuery({
+      method: "DELETE",
+      url: `http://localhost:5000/api/posts/${config.id}`,
+      body: config,
+    });
+    console.log(config.username);
   };
 
   const registrationHandler = (username, email, password) => {
@@ -196,6 +227,7 @@ export const PostsProvider = (props) => {
     categories: cats,
     createPost: createPostHandler,
     updatePost: updatePostHandler,
+    deletePost: deletePostHandler,
     getCategories: getCategoriesHandler,
     clear: clearErrorMessage,
     login: loginHandler,
