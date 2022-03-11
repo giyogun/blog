@@ -8,6 +8,7 @@ const postsRoute = require("./routes/posts");
 const categoriesRoute = require("./routes/categories");
 const multer = require("multer");
 const path = require("path");
+const helpers = require("./helpers");
 
 dotenv.config();
 app.use(express.json());
@@ -17,6 +18,21 @@ mongoose
   .connect(process.env.MONGO_URL)
   .then(console.log("CONNECTED to Backend"))
   .catch((err) => console.log(err));
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  );
+  return next();
+
+  // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+});
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
@@ -29,19 +45,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (req, res) => {
-  res.status(200).json("Image has been uploaded!");
-});
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
-
-  // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  next();
+  if (!req.body.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|)$/)) {
+    res.status(401).send("Only images are allowed");
+  } else {
+    res.status(200).json("Image has been uploaded!");
+  }
 });
 
 app.use("/api/auth", authRoute);

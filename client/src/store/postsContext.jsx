@@ -48,6 +48,8 @@ export const PostsProvider = (props) => {
     }
   }, []);
 
+  const { queryPosts: getCats } = useApiCall(getAllCats);
+
   const createPostFunc = useCallback(
     (res) => {
       if (res.statusText === "OK") {
@@ -57,12 +59,17 @@ export const PostsProvider = (props) => {
     },
     [history]
   );
+
+  const { queryPosts: createPostQuery } = useApiCall(createPostFunc);
+
   const updatePostFunc = useCallback((res) => {
     if (res.statusText === "OK") {
       history.replace("/posts/" + res.data._id);
     }
     console.log(res);
   }, [history]);
+
+  const { queryPosts: updatePostQuery } = useApiCall(updatePostFunc);
 
   const getAllPosts = useCallback((res) => {
     console.log(res);
@@ -71,22 +78,30 @@ export const PostsProvider = (props) => {
     }
   }, []);
 
+  const { queryPosts } = useApiCall(getAllPosts);
+
+
   const getPostsByUser = useCallback((res) => {
     if (res.statusText === "OK") {
       setPosts(res.data);
     }
   }, []);
 
+  const { queryPosts: queryPostByUser } = useApiCall(getPostsByUser);
+
   const deleteSinglePost = useCallback(
     (res) => {
       if (res.statusText === "OK") {
         console.log("Post Deleted");
+        queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
         history.replace("/");
       }
       console.log(res);
     },
-    [history]
+    [history, queryPosts]
   );
+
+  const { queryPosts: deletePostQuery } = useApiCall(deleteSinglePost);
 
   const filterAllPosts = useCallback((res, cat) => {
     const filteredPosts = res.data.filter((m) => m.categories.includes(cat));
@@ -94,11 +109,16 @@ export const PostsProvider = (props) => {
     setPosts(filteredPosts);
   }, []);
 
+  const { queryPosts: filterPosts } = useApiCall(filterAllPosts);
+
+
   const searchPosts = useCallback((res, cat, title) => {
     const posts = res.data.filter((m) => m.title.includes(capitalize(title)));
 
     setPosts1(posts);
   }, []);
+
+  const { queryPosts: postsSearch } = useApiCall(searchPosts);
 
   const loginApi = useCallback(
     (res) => {
@@ -114,26 +134,22 @@ export const PostsProvider = (props) => {
     [history]
   );
 
+  const { queryPosts: userLogin } = useApiCall(loginApi);
+
+
   const registration = (res) => {
-    if (!res.statusText === "OK") {
+    // if (!res.statusText === "OK") {
       setErrorMessage(res);
-    }
+    // }
+    console.log(res);
   };
 
   const { queryPosts: registerQuery } = useApiCall(registration);
 
-  const { queryPosts } = useApiCall(getAllPosts);
-  const { queryPosts: createPostQuery } = useApiCall(createPostFunc);
-  const { queryPosts: updatePostQuery } = useApiCall(updatePostFunc);
-  const { queryPosts: getCats } = useApiCall(getAllCats);
-  const { queryPosts: queryPostByUser } = useApiCall(getPostsByUser);
-  const { queryPosts: postsSearch } = useApiCall(searchPosts);
-  const { queryPosts: filterPosts } = useApiCall(filterAllPosts);
-  const { queryPosts: userLogin } = useApiCall(loginApi);
-  const { queryPosts: deletePostQuery } = useApiCall(deleteSinglePost);
 
   useEffect(() => {
     queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
+    console.log(2000)
   }, [queryPosts]);
 
   useEffect(() => {

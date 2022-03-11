@@ -75,6 +75,8 @@ const Register = () => {
     submitPassword();
     submitUsername();
 
+    console.log(error);
+
     if (formIsValid) {
       ctx.register(username, email, password);
     }

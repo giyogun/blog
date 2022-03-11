@@ -18,13 +18,18 @@ const Write = () => {
   const location = useLocation();
   const history = useHistory();
   const [post, setPost] = useState({});
+  // const [canCreatePost, setCanCreatePost] = useState(false);
+  // const [dbData, setDbData] = useState(null);
   const [isEditState, setIsEditState] = useState(false);
   const postId = location.search.split("=")[1];
   const titleRef = useRef();
   const bodyRef = useRef();
   const publicFolder = "http://localhost:5000/images/";
 
-  const uploadImage = useCallback((data) => {}, []);
+  const uploadImage = useCallback((data) => {
+    console.log(data);
+    // setDbData(data);
+  }, []);
   const { username } = ls;
 
   const getOnePost = useCallback(
@@ -55,35 +60,59 @@ const Write = () => {
     }
   }, [singlePostQuery, postId]);
 
-  console.log(isEditState);
+  // useEffect(() => {
+  //   if (dbData === "Only images are allowed") {
+  //     // setCanCreatePost(false);
+  //     window.alert(dbData);
+  //     setTimeout(() => {
+  //       setDbData(null);
+  //     }, 2000);
+  //   } else {
+  //     if (dbData !== null) {
+  //       setCanCreatePost(true);
+  //     }
+  //   }
+  //   console.log(344);
+  // }, [dbData]);
 
   const updatePostHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
     const newBody = bodyRef.current.value;
-    // const newImg = URL.createObjectURL(selectedFile);
+
+    if (!newBody || !newTitle) {
+      window.alert("Please fill all fields");
+      return;
+    }
+
     if (isEditState) {
-      console.log(1);
       const updatedPost = {
         title: newTitle,
         description: newBody,
         id: post._id,
         username: post.username,
-        // photo: newImg
       };
+
       if (selectedFile) {
         const data = new FormData();
         const filename = Date.now() + selectedFile.name;
         data.append("name", filename);
         data.append("file", selectedFile);
         updatedPost.photo = filename;
-        uploadImageQuery({
-          url: `http://localhost:5000/api/upload`,
-          method: "POST",
-          body: data,
-        });
+        if (!newBody || !newTitle) {
+          window.alert("Please fill all fields");
+          return;
+        } else {
+          uploadImageQuery({
+            url: `http://localhost:5000/api/upload`,
+            method: "POST",
+            body: data,
+          });
+        }
       }
-      ctx.updatePost(updatedPost);
+      if (newBody && newTitle) {
+        ctx.updatePost(updatedPost);
+      }
     } else {
       const newPost = {
         title: newTitle,
@@ -96,19 +125,32 @@ const Write = () => {
         data.append("name", filename);
         data.append("file", selectedFile);
         newPost.photo = filename;
-        uploadImageQuery({
-          url: `http://localhost:5000/api/upload`,
-          method: "POST",
-          body: data,
-        });
+        if (!newBody || !newTitle) {
+          window.alert("Please fill all fields");
+          return;
+        } else {
+          uploadImageQuery({
+            url: `http://localhost:5000/api/upload`,
+            method: "POST",
+            body: data,
+          });
+        }
       }
-      ctx.createPost(newPost);
+      if (newBody && newTitle) {
+        ctx.createPost(newPost);
+      }
     }
-    console.log(isEditState);
   };
 
   const changeHandler = (e) => {
-    setSelectedFile(e.target.files[0]);
+    const x = e.target.files[0].name;
+    const y = /\.(jpg|JPG|jpeg|JPEG|png|PNG|)$/;
+
+    if (x.match(y)) {
+      setSelectedFile(e.target.files[0]);
+    } else {
+      window.alert("Only images allowed");
+    }
   };
 
   let pic;
@@ -131,19 +173,7 @@ const Write = () => {
 
   return (
     <div className={classes.write}>
-      (
-      {
-        <img
-          // src="https://presentageministries.org/wp-content/uploads/2019/07/placeholder.png"
-          // src={
-          //  selectedFile ? URL.createObjectURL(selectedFile) : isEditState && publicFolder + post.photo
-          // }
-          src={pic}
-          alt=""
-          className={classes.writeImg}
-        />
-      }
-      )
+      ({<img src={pic} alt="" className={classes.writeImg} />})
       <form className={classes.writeForm} onSubmit={updatePostHandler}>
         <div className={classes.writeFormGroup}>
           <label htmlFor="fileInput">
@@ -152,6 +182,7 @@ const Write = () => {
           <input
             type="file"
             id="fileInput"
+            accept=".jpg, .JPG, .jpeg, .JPEG, .png, .PNG"
             style={{ display: "none" }}
             onChange={changeHandler}
           />
