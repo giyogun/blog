@@ -43,6 +43,13 @@
   object-fit: cover;
 }
 
+.ppIcon {
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
+  /* object-fit: cover; */
+}
+
 .settingsPPIcon {
   width: 25px;
   height: 25px;
