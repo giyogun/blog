@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 
 const initialState = { value: "", inputFieldIsTouched: false };
 
@@ -25,33 +25,24 @@ const inputReducer = (state, action) => {
 
 const useClientVal = (validateValue) => {
   const [inputState, dispatchFunc] = useReducer(inputReducer, initialState);
-  // const [enteredValue, setEnteredValue] = useState("");
-  // const [inputFieldIsTouched, setInputFieldIsTouched] = useState(false);
 
   const valueIsValid = validateValue(inputState.value);
   const hasError = !valueIsValid && inputState.inputFieldIsTouched;
 
   const inputChangeHandler = (e) => {
     dispatchFunc({ type: "CHANGE", payload: e.target.value });
-    // setEnteredValue(e.target.value);
   };
 
   const inputBlurHandler = (e) => {
     dispatchFunc({ type: "BLUR" });
-
-    // setInputFieldIsTouched(true);
   };
 
   const reset = () => {
     dispatchFunc({ type: "RESET" });
-    // setEnteredValue("");
-    // setInputFieldIsTouched(false);
   };
 
   const submit = () => {
     dispatchFunc({ type: "SUBMIT" });
-    // setEnteredValue("");
-    // setInputFieldIsTouched(false);
   };
 
   return {

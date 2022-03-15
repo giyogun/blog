@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import classes from "./Settings.module.css";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -11,7 +11,6 @@ const Settings = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [ppIsValid, setPpIsValid] = useState(!!profilePic);
   const emailRef = useRef();
-  const usernameRef = useRef();
   const passwordRef = useRef();
   const publicFolder = "http://localhost:5000/images/";
 
@@ -35,7 +34,7 @@ const Settings = () => {
 
     if (x.match(y)) {
       setSelectedFile(e.target.files[0]);
-      setPpIsValid(true)
+      setPpIsValid(true);
     } else {
       window.alert("Only images allowed");
     }
@@ -44,16 +43,12 @@ const Settings = () => {
   const updateInfoHandler = (e) => {
     e.preventDefault();
     const email = emailRef.current.value;
-    const username = usernameRef.current.value;
     const password = passwordRef.current.value;
 
     const newUserInfo = { userId: ls._id };
 
     if (!!email) {
       newUserInfo.email = email;
-    }
-    if (!!username) {
-      newUserInfo.username = username;
     }
     if (!!password) {
       newUserInfo.password = password;
@@ -72,7 +67,7 @@ const Settings = () => {
       });
     }
 
-    const canMakePostReq = !!email || !!username || !!password || selectedFile;
+    const canMakePostReq = !!email || !!password || selectedFile;
 
     if (canMakePostReq) {
       queryPosts({
@@ -101,8 +96,11 @@ const Settings = () => {
         <form className={classes.settingsForm} onSubmit={updateInfoHandler}>
           <label>Profile Picture</label>
           <div className={classes.settingsPP}>
-            {ppIsValid ?
-            <img src={picSrc} alt="" /> : <ImUser className={classes.ppIcon} />}
+            {ppIsValid ? (
+              <img src={picSrc} alt="" />
+            ) : (
+              <ImUser className={classes.ppIcon} />
+            )}
             <label htmlFor="fileInput">
               <FaRegUserCircle className={classes.settingsPPIcon} />
             </label>
@@ -110,11 +108,12 @@ const Settings = () => {
               type="file"
               id="fileInput"
               style={{ display: "none" }}
+              accept=".jpg, .JPG, .jpeg, .JPEG, .png, .PNG"
               onChange={picChangeHandler}
             />
           </div>
           <label>Username</label>
-          <input type="text" placeholder={ls.username} ref={usernameRef} />
+          <input type="text" value={ls.username} disabled />
           <label>Email</label>
           <input type="email" placeholder={ls.email} ref={emailRef} />
           <label>Password</label>

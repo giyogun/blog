@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import classes from "./Register.module.css";
 import { GrClose } from "react-icons/gr";
 import { useHistory } from "react-router";
 import useClientVal from "../../hooks/useClientVal";
-import PostsContext from "../../store/postsContext";
+import PostsContext from "../../context/postsContext";
 
 const Register = () => {
   const ctx = useContext(PostsContext);
@@ -75,8 +75,6 @@ const Register = () => {
     submitPassword();
     submitUsername();
 
-    console.log(error);
-
     if (formIsValid) {
       ctx.register(username, email, password);
     }
@@ -105,14 +103,13 @@ const Register = () => {
       setTimeout(() => {
         clear();
       }, 5000);
-    } else if (error === "Username is not available"){
+    } else if (error === "Username is not available") {
       userNameRef.current.focus();
       setTimeout(() => {
         clear();
       }, 5000);
     }
   }, [clear, error]);
-
 
   return (
     <div className={classes.reg}>
@@ -122,14 +119,12 @@ const Register = () => {
           <div className={usernameClasses}>
             <label>Username</label>
             <input
-              // className={classes.regInput}
               type="text"
               placeholder="Enter your username..."
               onChange={nameChangeHandler}
               onBlur={nameBlurHandler}
               value={username}
               ref={userNameRef}
-              // required
             />
             {error === "Username is not available" && (
               <p className={classes.errorText}>{error}</p>
@@ -141,14 +136,12 @@ const Register = () => {
           <div className={emailClasses}>
             <label>Email</label>
             <input
-              // className={emailClasses}
               type="email"
               placeholder="Enter your email..."
               onChange={emailChangeHandler}
               onBlur={emailBlurHandler}
               value={email}
               ref={emailRef}
-              // required
             />
             {error === "Email is already registered" && (
               <p className={classes.errorText}>{error}</p>
@@ -183,7 +176,6 @@ const Register = () => {
         className={classes.closeBtn}
         onClick={() => history.push("/login")}
       />
-      {/* <button className={classes.regButton}>Register</button> */}
     </div>
   );
 };

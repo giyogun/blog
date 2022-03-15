@@ -1,11 +1,8 @@
 import React, { Fragment, useContext } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-import PostsContext from "../../store/postsContext";
-// import useFilter from "../../useFilter";
+import PostsContext from "../../context/postsContext";
 import classes from "./Post.module.css";
-
-// const BASE_URL = "http://localhost:5000/api";
 
 const postDateHandler = (x) => {
   let displayedDate;
@@ -30,7 +27,7 @@ const postDateHandler = (x) => {
   }
 
   if (inDays > 6) {
-    displayedDate = `${x.getDay() - 1}/${x.getMonth() + 1}/${x.getFullYear()}`;
+    displayedDate = x.toDateString();
   }
 
   return displayedDate;
@@ -41,7 +38,7 @@ const Post = () => {
 
   const history = useHistory();
 
-  const publicFolder = "http://localhost:5000/images/"
+  const publicFolder = "http://localhost:5000/images/";
 
   const filterPostsHandler = (cat) => {
     ctx.filterPosts(cat);
@@ -53,26 +50,23 @@ const Post = () => {
       {ctx.blogPosts.map((post) => (
         <div className={classes.post} key={post._id}>
           {post.photo && (
-            <img className={classes.postImg} src={publicFolder + post.photo} alt="" />
+            <img
+              className={classes.postImg}
+              src={publicFolder + post.photo}
+              alt=""
+            />
           )}
           <div className={classes.postInfo}>
             <div className={classes.postCats}>
-                {post.categories.map((c) => (
-                  <span
-                    key={Math.random()}
-                    className={classes.postCat}
-                    onClick={() => filterPostsHandler(c)}
-                  >
-                    {c}
-                  </span>
-                ))}
-              {/* <span
-                // key={c._id}
-                className={classes.postCat}
-                onClick={() => filterPostsHandler(post.categories[0])}
-              >
-                {post.categories[0]}
-              </span> */}
+              {post.categories.map((c) => (
+                <span
+                  key={Math.random()}
+                  className={classes.postCat}
+                  onClick={() => filterPostsHandler(c)}
+                >
+                  {c}
+                </span>
+              ))}
             </div>
             <Link to={`/posts/${post._id}`}>
               <span className={classes.postTitle}>{post.title}</span>

@@ -76,6 +76,12 @@
   border-bottom: 1px solid lightgray;
 }
 
+.settingsForm input:first-child:disabled,
+.settingsForm input:first-child:disabled:hover,
+.settingsForm input:first-child:disabled:active {
+  cursor: not-allowed;
+}
+
 .settingsSubmit {
   border: none;
   border-radius: 10px;

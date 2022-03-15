@@ -1,7 +1,4 @@
-import React, {
-  useContext,
-  useRef,
-} from "react";
+import React, { useContext, useRef } from "react";
 import classes from "./TopBar.module.css";
 import {
   FaFacebookSquare,
@@ -13,7 +10,7 @@ import {
 import { ImUser } from "react-icons/im";
 
 import { Link, NavLink } from "react-router-dom";
-import PostsContext from "../../store/postsContext";
+import PostsContext from "../../context/postsContext";
 
 const TopBar = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
@@ -90,7 +87,6 @@ const TopBar = () => {
               className={classes.topListItem}
               onClick={() => {
                 ctx.logout();
-                // localStorage.removeItem("user");
               }}
             >
               <NavLink to="/">LOGOUT</NavLink>

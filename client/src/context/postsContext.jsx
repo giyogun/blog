@@ -53,7 +53,6 @@ export const PostsProvider = (props) => {
   const createPostFunc = useCallback(
     (res) => {
       if (res.statusText === "OK") {
-        console.log(res);
         history.replace("/posts/" + res.data._id);
       }
     },
@@ -66,13 +65,11 @@ export const PostsProvider = (props) => {
     if (res.statusText === "OK") {
       history.replace("/posts/" + res.data._id);
     }
-    console.log(res);
   }, [history]);
 
   const { queryPosts: updatePostQuery } = useApiCall(updatePostFunc);
 
   const getAllPosts = useCallback((res) => {
-    console.log(res);
     if (res.statusText === "OK") {
       setPosts(res.data);
     }
@@ -96,7 +93,6 @@ export const PostsProvider = (props) => {
         queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
         history.replace("/");
       }
-      console.log(res);
     },
     [history, queryPosts]
   );
@@ -141,7 +137,6 @@ export const PostsProvider = (props) => {
     // if (!res.statusText === "OK") {
       setErrorMessage(res);
     // }
-    console.log(res);
   };
 
   const { queryPosts: registerQuery } = useApiCall(registration);
@@ -149,7 +144,6 @@ export const PostsProvider = (props) => {
 
   useEffect(() => {
     queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
-    console.log(2000)
   }, [queryPosts]);
 
   useEffect(() => {
@@ -185,7 +179,6 @@ export const PostsProvider = (props) => {
       url: `http://localhost:5000/api/posts/${config.id}`,
       body: config,
     });
-    console.log(config.username);
   };
 
   const registrationHandler = (username, email, password) => {

@@ -8,7 +8,7 @@ import React, {
 import classes from "./SinglePost.module.css";
 import { RiEditLine, RiDeleteBin5Line } from "react-icons/ri";
 import { useHistory, useParams } from "react-router";
-import PostsContext from "../../store/postsContext";
+import PostsContext from "../../context/postsContext";
 import useApiCall from "../../hooks/useApiCall";
 import { Link } from "react-router-dom";
 import DeleteModal from "../UI/DeleteModal";
@@ -36,7 +36,7 @@ const postDateHandler = (x) => {
   }
 
   if (inDays > 6) {
-    displayedDate = `${x.getDay() - 1}/${x.getMonth() + 1}/${x.getFullYear()}`;
+    displayedDate = x.toDateString();
   }
 
   return displayedDate;
@@ -44,7 +44,7 @@ const postDateHandler = (x) => {
 
 const SinglePost = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
-  const x = ls ? ls.username : null;
+  const x = ls?._id;
   const params = useParams();
   const { postId } = params;
   const history = useHistory();
@@ -57,7 +57,6 @@ const SinglePost = () => {
   const { isLoggedIn } = ctx;
 
   const getOnePost = useCallback((res) => {
-    console.log(res);
     setPost(res.data);
   }, []);
 
@@ -71,15 +70,12 @@ const SinglePost = () => {
   }, [singlePostQuery, postId]);
 
   useEffect(() => {
-    setCanEdit(x === post.username);
-  }, [x, post.username]);
+    setCanEdit(x === post.userId);
+  }, [x, post.userId]);
 
-  console.log(x === post.username);
-  console.log(post.id);
 
   const authorClickHandler = (name) => {
     ctx.filterPostsByUser(name);
-    console.log(history);
   };
 
   const editPostHandler = () => {
@@ -114,7 +110,7 @@ const SinglePost = () => {
                     close={() => setShowDeletePrompt(false)}
                     deletePost={() =>
                       ctx.deletePost({
-                        username: post.username,
+                        userId: post.userId,
                         id: post._id,
                       })
                     }

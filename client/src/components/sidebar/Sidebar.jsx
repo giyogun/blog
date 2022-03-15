@@ -7,9 +7,8 @@ import {
   FaPinterest,
   FaInstagram,
 } from "react-icons/fa";
-import PostsContext from "../../store/postsContext";
+import PostsContext from "../../context/postsContext";
 
-// const BASE_URL = "http://localhost:5000/api/posts";
 
 const Sidebar = () => {
   const ctx = useContext(PostsContext);

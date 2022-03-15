@@ -1,10 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import axios from "axios";
 
-// const BASE_URL = "http://localhost:5000/api";
 
 function useApiCall(applyData) {
-  const [res, setRes] = useState(null);
 
   const queryPosts = useCallback(
     async (config, cat = "", title = undefined, id=null) => {
@@ -56,7 +54,6 @@ function useApiCall(applyData) {
 
   return {
     queryPosts,
-    res
   };
 }
 

@@ -9,7 +9,7 @@ import classes from "./Write.module.css";
 import { MdAddCircleOutline } from "react-icons/md";
 import { useHistory, useLocation } from "react-router";
 import useApiCall from "../../hooks/useApiCall";
-import PostsContext from "../../store/postsContext";
+import PostsContext from "../../context/postsContext";
 
 const Write = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
@@ -18,24 +18,19 @@ const Write = () => {
   const location = useLocation();
   const history = useHistory();
   const [post, setPost] = useState({});
-  // const [canCreatePost, setCanCreatePost] = useState(false);
-  // const [dbData, setDbData] = useState(null);
   const [isEditState, setIsEditState] = useState(false);
   const postId = location.search.split("=")[1];
   const titleRef = useRef();
   const bodyRef = useRef();
   const publicFolder = "http://localhost:5000/images/";
 
-  const uploadImage = useCallback((data) => {
-    console.log(data);
-    // setDbData(data);
-  }, []);
-  const { username } = ls;
+  const uploadImage = useCallback((data) => {}, []);
+  const { _id } = ls;
 
   const getOnePost = useCallback(
     (res) => {
       if (res.statusText) {
-        const x = res.data.username === username;
+        const x = res.data.userId === _id;
         if (!x) {
           history.push("/write");
         }
@@ -45,7 +40,7 @@ const Write = () => {
         history.push("/write");
       }
     },
-    [history, username]
+    [history, _id]
   );
 
   const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
@@ -59,21 +54,6 @@ const Write = () => {
       });
     }
   }, [singlePostQuery, postId]);
-
-  // useEffect(() => {
-  //   if (dbData === "Only images are allowed") {
-  //     // setCanCreatePost(false);
-  //     window.alert(dbData);
-  //     setTimeout(() => {
-  //       setDbData(null);
-  //     }, 2000);
-  //   } else {
-  //     if (dbData !== null) {
-  //       setCanCreatePost(true);
-  //     }
-  //   }
-  //   console.log(344);
-  // }, [dbData]);
 
   const updatePostHandler = (e) => {
     e.preventDefault();
@@ -117,7 +97,8 @@ const Write = () => {
       const newPost = {
         title: newTitle,
         description: newBody,
-        username: username,
+        username: ls.username,
+        userId: _id,
       };
       if (selectedFile) {
         const data = new FormData();

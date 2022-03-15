@@ -62,8 +62,7 @@
 }
 
 .dropdown:hover .topDropdownContent,
-.topDropdownContent a:hover
- {
+.topDropdownContent a:hover {
   display: flex;
   flex-direction: column;
   background-color: rgb(3, 156, 156);
@@ -72,12 +71,10 @@
 .searchDropdown:hover .searchResults,
 .searchResults a:hover {
   display: flex;
-  width:inherit;
+  width: inherit;
   flex-direction: column;
   background-color: rgb(3, 156, 156);
 }
-
-
 
 .topCenter {
   flex: 6;
@@ -164,7 +161,6 @@
     inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2); */
 }
 
-
 .searchContainer .searchInput {
   background: transparent;
   border: none;
@@ -178,9 +174,6 @@
 .searchContainer:hover > .searchInput {
   width: 300px;
 }
-/* .searchContainer .topSearchIcon {
-  color: #5cbdbb;
-} */
 
 @keyframes hoverShake {
   0% {
