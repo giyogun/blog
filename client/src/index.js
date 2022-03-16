@@ -5,12 +5,12 @@ import App from "./App";
 import { PostsProvider } from "./context/postsContext";
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <PostsProvider>
         <App />
       </PostsProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+    </BrowserRouter>,
+  // </React.StrictMode>,
   document.getElementById("root")
 );

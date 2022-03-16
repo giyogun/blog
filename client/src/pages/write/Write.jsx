@@ -23,7 +23,6 @@ const Write = () => {
   const [bodyText, setBodyText] = useState(null);
   const postId = location.search.split("=")[1];
   const titleRef = useRef();
-  const bodyRef = useRef();
   const publicFolder = "http://localhost:5000/images/";
 
   const uploadImage = useCallback((data) => {}, []);
@@ -57,6 +56,8 @@ const Write = () => {
     }
   }, [singlePostQuery, postId]);
 
+  console.log(bodyText);
+
   const updatePostHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
@@ -67,35 +68,35 @@ const Write = () => {
       return;
     }
 
-    // if (isEditState) {
-    //   const updatedPost = {
-    //     title: newTitle,
-    //     description: newBody,
-    //     id: post._id,
-    //     username: post.username,
-    //   };
+    if (isEditState) {
+      const updatedPost = {
+        title: newTitle,
+        description: bodyText,
+        id: post._id,
+        username: post.username,
+      };
 
-    //   if (selectedFile) {
-    //     const data = new FormData();
-    //     const filename = Date.now() + selectedFile.name;
-    //     data.append("name", filename);
-    //     data.append("file", selectedFile);
-    //     updatedPost.photo = filename;
-    //     if (!newBody || !newTitle) {
-    //       window.alert("Please fill all fields");
-    //       return;
-    //     } else {
-    //       uploadImageQuery({
-    //         url: `http://localhost:5000/api/upload`,
-    //         method: "POST",
-    //         body: data,
-    //       });
-    //     }
-    //   }
-    //   if (newBody && newTitle) {
-    //     ctx.updatePost(updatedPost);
-    //   }
-    // } else {
+      if (selectedFile) {
+        const data = new FormData();
+        const filename = Date.now() + selectedFile.name;
+        data.append("name", filename);
+        data.append("file", selectedFile);
+        updatedPost.photo = filename;
+        if (!bodyText || !newTitle) {
+          window.alert("Please fill all fields");
+          return;
+        } else {
+          uploadImageQuery({
+            url: `http://localhost:5000/api/upload`,
+            method: "POST",
+            body: data,
+          });
+        }
+      }
+      if (bodyText && newTitle) {
+        ctx.updatePost(updatedPost);
+      }
+    } else {
       const newPost = {
         title: newTitle,
         description: bodyText,
@@ -122,9 +123,7 @@ const Write = () => {
       if (bodyText && newTitle) {
         ctx.createPost(newPost);
       }
-    // // }
-    // console.log(bodyText);
-
+    }
   };
 
   const changeHandler = (e) => {
@@ -156,9 +155,9 @@ const Write = () => {
     }
   }
 
-  const xHandler = (e)=>{
-    setBodyText(e);
-  }
+  // const xHandler = (e)=>{
+  //   setBodyText(e);
+  // }
 
   return (
     <div className={classes.write}>
@@ -186,8 +185,8 @@ const Write = () => {
         </div>
         <Draftail
           placeholder={!isEditState ? "Tell your story..." : ""}
-          defaultValue={isEditState ? post.description : ""}
-          value={xHandler}
+          defaultValue={isEditState ? bodyText : ""}
+          value={(enteredText) => setBodyText(enteredText)}
         />
         <button className={classes.writeSubmit}>Publish</button>
       </form>
