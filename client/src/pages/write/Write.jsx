@@ -10,6 +10,7 @@ import { MdAddCircleOutline } from "react-icons/md";
 import { useHistory, useLocation } from "react-router";
 import useApiCall from "../../hooks/useApiCall";
 import PostsContext from "../../context/postsContext";
+import Draftail from "./Draftail";
 
 const Write = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
@@ -19,6 +20,7 @@ const Write = () => {
   const history = useHistory();
   const [post, setPost] = useState({});
   const [isEditState, setIsEditState] = useState(false);
+  const [bodyText, setBodyText] = useState(null);
   const postId = location.search.split("=")[1];
   const titleRef = useRef();
   const bodyRef = useRef();
@@ -58,45 +60,45 @@ const Write = () => {
   const updatePostHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
-    const newBody = bodyRef.current.value;
+    // const newBody = bodyRef.current.value;
 
-    if (!newBody || !newTitle) {
+    if (!bodyText || !newTitle) {
       window.alert("Please fill all fields");
       return;
     }
 
-    if (isEditState) {
-      const updatedPost = {
-        title: newTitle,
-        description: newBody,
-        id: post._id,
-        username: post.username,
-      };
+    // if (isEditState) {
+    //   const updatedPost = {
+    //     title: newTitle,
+    //     description: newBody,
+    //     id: post._id,
+    //     username: post.username,
+    //   };
 
-      if (selectedFile) {
-        const data = new FormData();
-        const filename = Date.now() + selectedFile.name;
-        data.append("name", filename);
-        data.append("file", selectedFile);
-        updatedPost.photo = filename;
-        if (!newBody || !newTitle) {
-          window.alert("Please fill all fields");
-          return;
-        } else {
-          uploadImageQuery({
-            url: `http://localhost:5000/api/upload`,
-            method: "POST",
-            body: data,
-          });
-        }
-      }
-      if (newBody && newTitle) {
-        ctx.updatePost(updatedPost);
-      }
-    } else {
+    //   if (selectedFile) {
+    //     const data = new FormData();
+    //     const filename = Date.now() + selectedFile.name;
+    //     data.append("name", filename);
+    //     data.append("file", selectedFile);
+    //     updatedPost.photo = filename;
+    //     if (!newBody || !newTitle) {
+    //       window.alert("Please fill all fields");
+    //       return;
+    //     } else {
+    //       uploadImageQuery({
+    //         url: `http://localhost:5000/api/upload`,
+    //         method: "POST",
+    //         body: data,
+    //       });
+    //     }
+    //   }
+    //   if (newBody && newTitle) {
+    //     ctx.updatePost(updatedPost);
+    //   }
+    // } else {
       const newPost = {
         title: newTitle,
-        description: newBody,
+        description: bodyText,
         username: ls.username,
         userId: _id,
       };
@@ -106,7 +108,7 @@ const Write = () => {
         data.append("name", filename);
         data.append("file", selectedFile);
         newPost.photo = filename;
-        if (!newBody || !newTitle) {
+        if (!bodyText || !newTitle) {
           window.alert("Please fill all fields");
           return;
         } else {
@@ -117,10 +119,12 @@ const Write = () => {
           });
         }
       }
-      if (newBody && newTitle) {
+      if (bodyText && newTitle) {
         ctx.createPost(newPost);
       }
-    }
+    // }
+    console.log(bodyText);
+
   };
 
   const changeHandler = (e) => {
@@ -152,6 +156,11 @@ const Write = () => {
     }
   }
 
+  const xHandler = (e)=>{
+    // console.log(e);
+    setBodyText(e);
+  }
+
   return (
     <div className={classes.write}>
       ({<img src={pic} alt="" className={classes.writeImg} />})
@@ -176,7 +185,7 @@ const Write = () => {
             autoFocus={true}
           />
         </div>
-        <div className={classes.writeFormGroup}>
+        {/* <div className={classes.writeFormGroup}>
           <textarea
             placeholder={!isEditState ? "Tell your story..." : ""}
             defaultValue={isEditState ? post.description : ""}
@@ -184,7 +193,13 @@ const Write = () => {
             type="text"
             className={`${classes.writeInput} ${classes.writeText}`}
           ></textarea>
-        </div>
+        </div> */}
+        <Draftail
+          placeholder={!isEditState ? "Tell your story..." : ""}
+          defaultValue={isEditState ? post.description : ""}
+          value={xHandler}
+          // onChange={xHandler}
+        />
         <button className={classes.writeSubmit}>Publish</button>
       </form>
     </div>

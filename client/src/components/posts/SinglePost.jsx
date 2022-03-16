@@ -12,6 +12,7 @@ import PostsContext from "../../context/postsContext";
 import useApiCall from "../../hooks/useApiCall";
 import { Link } from "react-router-dom";
 import DeleteModal from "../UI/DeleteModal";
+import data from "./data";
 
 const postDateHandler = (x) => {
   let displayedDate;
@@ -42,7 +43,7 @@ const postDateHandler = (x) => {
   return displayedDate;
 };
 
-const SinglePost = () => {
+const SinglePost = (props) => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const x = ls?._id;
   const params = useParams();
@@ -132,7 +133,7 @@ const SinglePost = () => {
               {postDateHandler(new Date(post.createdAt))}
             </span>
           </div>
-          <p className={classes.fullPost}>{post.description}</p>
+          <div dangerouslySetInnerHTML={{__html:post["description"]}} className={classes.fullPost}></div>
         </div>
       </div>
     </Fragment>

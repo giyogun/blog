@@ -7,6 +7,7 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Settings from "./pages/settings/Settings";
 import Single from "./pages/single/Single";
+import Draftail from "./pages/write/Draftail";
 import Write from "./pages/write/Write";
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           {ctx.isLoggedIn ? <Write /> : <Redirect to="/login" />}
         </Route>
       </Switch>
+      {/* <Draftail /> */}
     </Fragment>
   );
 }
