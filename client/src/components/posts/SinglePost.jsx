@@ -12,7 +12,6 @@ import PostsContext from "../../context/postsContext";
 import useApiCall from "../../hooks/useApiCall";
 import { Link } from "react-router-dom";
 import DeleteModal from "../UI/DeleteModal";
-import data from "./data";
 
 const postDateHandler = (x) => {
   let displayedDate;
@@ -74,7 +73,6 @@ const SinglePost = (props) => {
     setCanEdit(x === post.userId);
   }, [x, post.userId]);
 
-
   const authorClickHandler = (name) => {
     ctx.filterPostsByUser(name);
   };
@@ -82,6 +80,7 @@ const SinglePost = (props) => {
   const editPostHandler = () => {
     history.push(`/write?edit=${postId}`);
   };
+
 
   return (
     <Fragment>

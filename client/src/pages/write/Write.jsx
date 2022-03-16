@@ -122,8 +122,8 @@ const Write = () => {
       if (bodyText && newTitle) {
         ctx.createPost(newPost);
       }
-    // }
-    console.log(bodyText);
+    // // }
+    // console.log(bodyText);
 
   };
 
@@ -157,7 +157,6 @@ const Write = () => {
   }
 
   const xHandler = (e)=>{
-    // console.log(e);
     setBodyText(e);
   }
 
@@ -185,20 +184,10 @@ const Write = () => {
             autoFocus={true}
           />
         </div>
-        {/* <div className={classes.writeFormGroup}>
-          <textarea
-            placeholder={!isEditState ? "Tell your story..." : ""}
-            defaultValue={isEditState ? post.description : ""}
-            ref={bodyRef}
-            type="text"
-            className={`${classes.writeInput} ${classes.writeText}`}
-          ></textarea>
-        </div> */}
         <Draftail
           placeholder={!isEditState ? "Tell your story..." : ""}
           defaultValue={isEditState ? post.description : ""}
           value={xHandler}
-          // onChange={xHandler}
         />
         <button className={classes.writeSubmit}>Publish</button>
       </form>

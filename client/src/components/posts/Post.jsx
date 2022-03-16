@@ -1,7 +1,9 @@
 import React, { Fragment, useContext } from "react";
+import { useEffect } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import PostsContext from "../../context/postsContext";
+import data from "./data";
 import classes from "./Post.module.css";
 
 const postDateHandler = (x) => {
@@ -40,10 +42,17 @@ const Post = () => {
 
   const publicFolder = "http://localhost:5000/images/";
 
+  // const b = () => {
+  // const x = ctx.blogPosts[0].description;
+  // removeAttributes(x);
+  // console.log(x);
+  // }
+
   const filterPostsHandler = (cat) => {
     ctx.filterPosts(cat);
     history.push(`?cat=${cat}`);
   };
+
 
   return (
     <Fragment>
@@ -76,7 +85,7 @@ const Post = () => {
               {postDateHandler(new Date(post.createdAt))}
             </span>
 
-            <p className={classes.postDesc}>{post.description}</p>
+            <p dangerouslySetInnerHTML={{__html:post["description"]}} className={classes.postDesc}></p>
           </div>
         </div>
       ))}
