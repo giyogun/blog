@@ -13,7 +13,6 @@ import { useLocation } from "react-router";
 import useApiCall from "../../hooks/useApiCall";
 import "./Draftail.css";
 
-
 const inlineToolbarPlugin = createInlineToolbarPlugin();
 const { InlineToolbar } = inlineToolbarPlugin;
 
@@ -22,7 +21,7 @@ const { SideToolbar } = sideToolbarPlugin;
 
 const plugins = [inlineToolbarPlugin, sideToolbarPlugin];
 
-const Draftail = (props) => {
+const Draftail = ({ defaultValue, placeholder, value }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const location = useLocation();
   const postId = location.search.split("=")[1];
@@ -48,22 +47,23 @@ const Draftail = (props) => {
     }
   }, [singlePostQuery, postId]);
 
-  console.log(editorState);
-
-  const onBlur = () => {
+  useEffect(() => {
     let html = stateToHTML(editorState.getCurrentContent());
-    props.value(html);
-  };
+    value(html);
+    console.log(111);
+  }, [value, editorState]);
+
+  // console.log(editorState);
+
 
   return (
     <div className="App">
       <DraftailEditor
         editorState={editorState}
         onChange={setEditorState}
-        defaultValue={props.defaultValue}
-        placeholder={props.placeholder}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
         plugins={plugins}
-        onBlur={onBlur}
         ref={editor}
       />
       <InlineToolbar />

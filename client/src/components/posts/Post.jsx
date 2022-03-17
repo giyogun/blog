@@ -47,42 +47,45 @@ const Post = () => {
 
   return (
     <Fragment>
-      {ctx.blogPosts.map((post) => (
-        <div className={classes.post} key={post._id}>
-          {post.photo && (
-            <img
-              className={classes.postImg}
-              src={publicFolder + post.photo}
-              alt=""
-            />
-          )}
-          <div className={classes.postInfo}>
-            <div className={classes.postCats}>
-              {post.categories.map((c) => (
-                <span
-                  key={Math.random()}
-                  className={classes.postCat}
-                  onClick={() => filterPostsHandler(c)}
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-            <Link to={`/posts/${post._id}`}>
-              <span className={classes.postTitle}>{post.title}</span>
-            </Link>
-            <hr />
-            <span className={classes.postDate}>
-              {postDateHandler(new Date(post.createdAt))}
-            </span>
+      {ctx.blogPosts.map((post) => {
+        let html = post.description;
+        let div = document.createElement("div");
+        div.innerHTML = html;
+        let text = div.textContent || div.innerText || "";
+        return (
+          <div className={classes.post} key={post._id}>
+            {post.photo && (
+              <img
+                className={classes.postImg}
+                src={publicFolder + post.photo}
+                alt=""
+              />
+            )}
+            <div className={classes.postInfo}>
+              <div className={classes.postCats}>
+                {post.categories.map((c) => (
+                  <span
+                    key={Math.random()}
+                    className={classes.postCat}
+                    onClick={() => filterPostsHandler(c)}
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+              <Link to={`/posts/${post._id}`}>
+                <span className={classes.postTitle}>{post.title}</span>
+              </Link>
+              <hr />
+              <span className={classes.postDate}>
+                {postDateHandler(new Date(post.createdAt))}
+              </span>
 
-            <p
-              dangerouslySetInnerHTML={{ __html: post["description"] }}
-              className={classes.postDesc}
-            ></p>
+              <p className={classes.postDesc}>{text}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </Fragment>
   );
 };
