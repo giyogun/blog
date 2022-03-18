@@ -1,5 +1,6 @@
 import { Fragment, useContext } from "react";
 import { Redirect, Route, Switch } from "react-router";
+import EditorContainer from "./components/draftjs/EditorContainer";
 import TopBar from "./components/topbar/TopBar";
 import PostsContext from "./context/postsContext";
 import Home from "./pages/home/Home";
@@ -34,6 +35,7 @@ function App() {
           {ctx.isLoggedIn ? <Write /> : <Redirect to="/login" />}
         </Route>
       </Switch>
+      {/* <EditorContainer /> */}
     </Fragment>
   );
 }

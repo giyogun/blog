@@ -33,6 +33,15 @@
   width: 70vw;
 }
 
+.editor {
+  font-size: 20px;
+  border: none;
+  margin-left: 150px;
+  width: 70vw;
+  display: flex;
+  align-items: center;
+}
+
 .writeInput:focus {
   outline: none;
 }

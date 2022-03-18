@@ -11,6 +11,7 @@ import { useHistory, useLocation } from "react-router";
 import useApiCall from "../../hooks/useApiCall";
 import PostsContext from "../../context/postsContext";
 import Draftail from "./Draftail";
+import EditorContainer from "../../components/draftjs/EditorContainer";
 
 const Write = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
@@ -27,6 +28,8 @@ const Write = () => {
 
   const uploadImage = useCallback((data) => {}, []);
   const { _id } = ls;
+
+  // const [boldClass, setBoldClass] = useState(classes.toolbar);
 
   const getOnePost = useCallback(
     (res) => {
@@ -158,6 +161,7 @@ const Write = () => {
   // const xHandler = (e)=>{
   //   setBodyText(e);
   // }
+  // const bold = <button className={boldClass}>BOLD</button>;
 
   return (
     <div className={classes.write}>
@@ -181,15 +185,27 @@ const Write = () => {
             ref={titleRef}
             className={classes.writeInput}
             autoFocus={true}
+            // onMouseUp={()=> setBoldClass(`${classes.toolbar} ${classes.active}`)}
+            // onMouseDown={()=> setBoldClass(classes.toolbar)}
           />
+          
         </div>
-        <Draftail
+
+        <div className={classes.editor}>
+            <EditorContainer
+              placeholder={!isEditState ? "Tell your story..." : ""}
+              defaultValue={isEditState ? bodyText : ""}
+              value={(enteredText) => setBodyText(enteredText)}
+            />
+          </div>
+        {/* <Draftail
           placeholder={!isEditState ? "Tell your story..." : ""}
           defaultValue={isEditState ? bodyText : ""}
           value={(enteredText) => setBodyText(enteredText)}
-        />
+        /> */}
         <button className={classes.writeSubmit}>Publish</button>
       </form>
+      {/* {bold} */}
     </div>
   );
 };
