@@ -41,27 +41,31 @@ const EditorContainer = ({defaultValue, placeholder, value}) => {
   }, [value, editorState]);
 
   const uploadImageCallback = (file) => {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://localhost:5000/api/upload");
-      // xhr.setRequestHeader("Authorization", "Client-ID ##clientid##");
-      const data = new FormData();
-      const filename = Date.now() + file.name;
-      data.append("name", filename);
-      data.append("file", file);
-      // await axios.post("http://localhost:5000/api/upload", data);
-      xhr.send(data);
-      xhr.addEventListener("load", () => {
-        const response = JSON.parse(xhr.responseText);
-        console.log(response);
-        resolve(response);
-      });
-      xhr.addEventListener("error", () => {
-        const error = JSON.parse(xhr.responseText);
-        console.log(error);
-        reject(error);
-      });
-    });
+    // return new Promise((resolve, reject) => {
+    //   const xhr = new XMLHttpRequest();
+    //   xhr.open("POST", "http://localhost:5000/api/upload");
+    //   // xhr.setRequestHeader("Authorization", "Client-ID ##clientid##");
+    //   const data = new FormData();
+    //   const filename = Date.now() + file.name;
+    //   data.append("name", filename);
+    //   data.append("file", file);
+    //   // await axios.post("http://localhost:5000/api/upload", data);
+    //   xhr.send(data);
+    //   xhr.addEventListener("load", () => {
+    //     const response = JSON.parse(xhr.responseText);
+    //     console.log(response);
+    //     resolve(response);
+    //   });
+    //   xhr.addEventListener("error", () => {
+    //     const error = JSON.parse(xhr.responseText);
+    //     console.log(error);
+    //     reject(error);
+    //   });
+    // });
+    var imgSrc = prompt("Enter image location", "");
+    imgSrc.height = '100px';
+    imgSrc.width = '50px';
+    document.execCommand()
   };
 
     return (
@@ -71,14 +75,17 @@ const EditorContainer = ({defaultValue, placeholder, value}) => {
           onEditorStateChange={setEditorState}
           placeholder={placeholder}
           defaultValue={defaultValue}
+          wrapperClassName="demo-wrapper"
           toolbar={{
-            inline: { inDropdown: true },
+            options: ['inline', 'blockType', 'list', 'textAlign', 'fontSize', 'list', 'link', 'embedded', 'image'],
+            inline: { inDropdown: true,  options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'] },
+            blockType: { inDropdown: false, options: ['H1', 'H2', 'H3']},
             list: { inDropdown: true },
-            textAlign: { inDropdown: true },
-            link: { inDropdown: true },
-            history: { inDropdown: true },
+            // textAlign: { inDropdown: true },
+            // link: { inDropdown: true },
+            // // history: { inDropdown: true },
             image: {
-              // uploadCallback: this.uploadImageCallback,
+              uploadCallback: uploadImageCallback,
               alt: { present: true, mandatory: true },
             },
           }}

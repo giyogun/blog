@@ -60,6 +60,11 @@
   font-weight: 600;
 }
 
+.fullPost img {
+  height: 300px;
+  width: 100%;
+}
+
 .singlePostAuthor {
   cursor: pointer;
 }
