@@ -4,6 +4,7 @@ import EditorContainer from "./components/draftjs/EditorContainer";
 import TopBar from "./components/topbar/TopBar";
 import PostsContext from "./context/postsContext";
 import Home from "./pages/home/Home";
+import Navbar from "./pages/home/Navbar";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Settings from "./pages/settings/Settings";
@@ -14,7 +15,8 @@ function App() {
   const ctx = useContext(PostsContext);
   return (
     <Fragment>
-      <TopBar />
+      {/* <TopBar /> */}
+      <Navbar />
       <Switch>
         <Route path="/" exact>
           <Home />
@@ -36,6 +38,7 @@ function App() {
         </Route>
       </Switch>
       {/* <EditorContainer /> */}
+      {/* <Navbar /> */}
     </Fragment>
   );
 }

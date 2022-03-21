@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import classes from "./TopBar.module.css";
 import {
   FaFacebookSquare,
@@ -11,10 +11,12 @@ import { ImUser } from "react-icons/im";
 
 import { Link, NavLink } from "react-router-dom";
 import PostsContext from "../../context/postsContext";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
 
 const TopBar = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const publicFolder = "http://localhost:5000/images/";
+  const [x, setX] = useState(classes.top);
 
   const searchRef = useRef();
   const ctx = useContext(PostsContext);
@@ -39,8 +41,24 @@ const TopBar = () => {
     ctx.search(enteredText);
   };
 
+  const clickHandle = () => {
+    if (x === classes.top) {
+      setX(`${classes.top} ${classes.responsive}`);
+    } else {
+      setX(classes.top);
+    }
+  };
+
   return (
-    <div className={classes.top}>
+    <div className={x}>
+      <Link
+          to="#"
+          // to="javascript:void(0);"
+          className={classes.icon}
+          onClick={clickHandle}
+        >
+          &#9776;
+        </Link>
       <div className={classes.topLeft}>
         <a href="https://instagram.com" rel="noreferrer" target="_blank">
           <FaInstagram className={classes.topIcon} />
@@ -92,6 +110,18 @@ const TopBar = () => {
               <NavLink to="/">LOGOUT</NavLink>
             </li>
           )}
+          <li>
+            <div className={classes.dropMenu}>
+              <button className={classes.btnDrop}>
+                Dropdown <IoIosArrowDropdownCircle />
+              </button>
+              <div className={classes.content}>
+                <Link to="#">Link 1</Link>
+                <Link to="#">Link 2</Link>
+                <Link to="#">Link 3</Link>
+              </div>
+            </div>
+          </li>
         </ul>
       </div>
       <div className={classes.topRight}>
@@ -137,6 +167,7 @@ const TopBar = () => {
             <FaSearch className={classes.topSearchIcon} />
           </div>
         </form>
+        {/* <NavLink to="/some">Another</NavLink> */}
       </div>
     </div>
   );

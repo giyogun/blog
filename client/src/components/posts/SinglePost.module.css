@@ -73,3 +73,17 @@
   text-decoration: none;
   color: inherit;
 }
+
+@media (min-width: 320px) and (max-width: 999px) {
+  p {
+    height: 50%;
+  }
+}
+
+@media (min-width: 1000px) {
+  .fullPost img {
+    height: 350px;
+    width: 75%;
+    object-fit: cover;
+  }
+}
