@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { convertFromHTML } from "draft-convert";
 import { stateToHTML } from "draft-js-export-html";
 
-
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
-import './EditorContainer.css'
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "./EditorContainer.css";
 import { useLocation } from "react-router";
 import useApiCall from "../../hooks/useApiCall";
 
-const EditorContainer = ({defaultValue, placeholder, value}) => {
+const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const location = useLocation();
   const postId = location.search.split("=")[1];
+  const editor = useRef();
 
   const getOnePost = useCallback((res) => {
     if (res.statusText === "OK") {
@@ -37,7 +37,6 @@ const EditorContainer = ({defaultValue, placeholder, value}) => {
   useEffect(() => {
     let html = stateToHTML(editorState.getCurrentContent());
     value(html);
-    console.log(111);
   }, [value, editorState]);
 
   const uploadImageCallback = (file) => {
@@ -63,35 +62,60 @@ const EditorContainer = ({defaultValue, placeholder, value}) => {
     //   });
     // });
     var imgSrc = prompt("Enter image location", "");
-    imgSrc.height = '100px';
-    imgSrc.width = '50px';
-    document.execCommand()
+    imgSrc.height = "100px";
+    imgSrc.width = "50px";
+    document.execCommand();
   };
 
-    return (
-      <div className="editor">
-        <Editor
-          editorState={editorState}
-          onEditorStateChange={setEditorState}
-          placeholder={placeholder}
-          defaultValue={defaultValue}
-          wrapperClassName="demo-wrapper"
-          toolbar={{
-            options: ['inline', 'blockType', 'list', 'textAlign', 'fontSize', 'list', 'link', 'embedded', 'image'],
-            inline: { inDropdown: true,  options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'] },
-            blockType: { inDropdown: false, options: ['H1', 'H2', 'H3']},
-            list: { inDropdown: true },
-            // textAlign: { inDropdown: true },
-            // link: { inDropdown: true },
-            // // history: { inDropdown: true },
-            image: {
-              uploadCallback: uploadImageCallback,
-              alt: { present: true, mandatory: true },
-            },
-          }}
-        />
-      </div>
-    );
-}
+  return (
+    <div className="editor">
+      <Editor
+        editorState={editorState}
+        onEditorStateChange={setEditorState}
+        placeholder={placeholder}
+        defaultValue={defaultValue}
+        wrapperClassName="demo-wrapper"
+        onChange={() => {
+          console.log(editor.current.editor.editor.innerText);
+          inner(editor.current.editor.editor.innerText)
+          // value(editor.current.editor.editor.innerText);
+        }}
+        ref={editor}
+        toolbar={{
+          options: [
+            "inline",
+            "blockType",
+            "list",
+            "textAlign",
+            "fontSize",
+            "list",
+            "link",
+            "embedded",
+            "image",
+          ],
+          inline: {
+            inDropdown: true,
+            options: [
+              "bold",
+              "italic",
+              "underline",
+              "strikethrough",
+              "monospace",
+            ],
+          },
+          blockType: { inDropdown: false, options: ["H1", "H2", "H3"] },
+          list: { inDropdown: true },
+          // textAlign: { inDropdown: true },
+          // link: { inDropdown: true },
+          // // history: { inDropdown: true },
+          image: {
+            uploadCallback: uploadImageCallback,
+            alt: { present: true, mandatory: true },
+          },
+        }}
+      />
+    </div>
+  );
+};
 
 export default EditorContainer;

@@ -142,7 +142,7 @@ const Draftail = ({ defaultValue, placeholder, value }) => {
       // onPointerDown={mouseDownHandler}
     >
       {/* {bold} */}
-      {/* {inlineStyles}
+      {/* {inlineStyles} */}
       <DraftailEditor
         editorState={editorState}
         handleKeyCommand={handleKeyCommand}
@@ -151,10 +151,10 @@ const Draftail = ({ defaultValue, placeholder, value }) => {
         placeholder={placeholder}
         plugins={plugins}
         ref={editor}
-      /> */}
-      <SimpleImageEditor />
-      {/* <InlineToolbar /> */}
-      {/* <SideToolbar /> */}
+      />
+      {/* <SimpleImageEditor /> */}
+      <InlineToolbar />
+      <SideToolbar />
     </div>
   );
 };

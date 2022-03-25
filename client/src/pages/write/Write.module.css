@@ -11,7 +11,7 @@
 }
 
 .writeForm {
-  position: relative;
+  position: absolute;
 }
 
 .writeFormGroup {
@@ -27,10 +27,12 @@
 }
 
 .writeInput {
+  position: relative;
   font-size: 30px;
   border: none;
   padding: 20px;
   width: 70vw;
+  /* max-width: 50%; */
 }
 
 .editor {
@@ -40,6 +42,7 @@
   width: 70vw;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .writeInput:focus {
@@ -54,7 +57,7 @@
 .writeSubmit {
   position: absolute;
   top: 20px;
-  right: 50px;
+  right: 60px;
   background-color: teal;
   color: white;
   padding: 10px;
@@ -63,4 +66,3 @@
   cursor: pointer;
   font-size: 16px;
 }
-

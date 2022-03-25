@@ -6,7 +6,9 @@
   top: 0;
   position: sticky;
   z-index: 999;
-  /* width: 100%; */
+  width: 100%;
+  align-items: center;
+  font-family: "Josefin Sans", sans-serif;
   /* height: 50px; */
   /* width: 100%;
   height: 50px;
@@ -16,7 +18,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  font-family: "Josefin Sans", sans-serif;
+  
   z-index: 999; */
 }
 
@@ -31,16 +33,37 @@
   font-size: 17px;
 }
 
-.topLeft,
-.topRight {
+.topLeft, .topRight {
   flex: 3;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.topCenter {
-  flex: 6;
+
+
+
+.container {
+  /* right: 50; */
+  /* float: right; */
+  /* margin-left: 50px; */
+  /* position: absolute; */
+  /* float: right; */
+  display: block;
+  margin: 0 auto;
+  /* margin: 0 auto; */
+}
+
+.container a {
+  /* margin-left: 35px; */
+  /* align-items: center;
+  justify-content: center;
+  margin-left: 175px; */
+  /* justify-self: center; */
+}
+
+.topCenter .dropdown-content a {
+  margin: 0;
 }
 
 .topIcon {
@@ -122,6 +145,7 @@
 
 .searchContainer {
   background: #fff;
+  margin-left: 10px;
   /* height: 30px; */
   margin-top: 5px;
   border-radius: 30px;
@@ -188,8 +212,17 @@
   overflow: hidden;
 }
 
+.follow-dropdown,
+.acct-dropdown {
+  display: none;
+  float: left;
+  overflow: hidden;
+}
+
 /* Style the dropdown button to fit inside the topnav */
-.dropdown .dropbtn {
+.dropdown .dropbtn,
+.follow-dropdown .follow-dropbtn,
+.acct-dropdown .acct-dropbtn {
   font-size: 17px;
   border: none;
   outline: none;
@@ -201,7 +234,9 @@
 }
 
 /* Style the dropdown content (hidden by default) */
-.dropdown-content {
+.dropdown-content,
+.sm-content,
+.acct-content {
   display: none;
   position: absolute;
   background-color: #f9f9f9;
@@ -211,7 +246,9 @@
 }
 
 /* Style the links inside the dropdown */
-.dropdown-content a {
+.dropdown-content a,
+.sm-content a,
+.acct-content a {
   float: none;
   color: black;
   padding: 12px 16px;
@@ -222,28 +259,37 @@
 
 /* Add a dark background on topnav links and the dropdown button on hover */
 .topnav a:hover,
-.dropdown:hover .dropbtn {
+.dropdown:hover .dropbtn,
+.follow-dropdown:hover .follow-dropbtn,
+.acct-dropdown:hover .acct-dropbtn {
   background-color: #555;
   color: white;
 }
 
 /* Add a grey background to dropdown links on hover */
-.dropdown-content a:hover {
+.dropdown-content a:hover,
+.sm-content a:hover,
+.acct-content a:hover {
   background-color: #ddd;
   color: black;
 }
 
 /* Show the dropdown menu when the user moves the mouse over the dropdown button */
-.dropdown:hover .dropdown-content {
+.dropdown:hover .dropdown-content,
+.follow-dropdown:hover .sm-content,
+.acct-dropdown:hover .acct-content {
   display: block;
   position: fixed;
 }
 
 /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 780px) {
   .topnav .topLeft,
   .topnav .topRight a,
+  .topnav .topRight .profileDropdown,
+  .topnav .topCenter .container .dropdown .dropdown-content,
   .topnav .topCenter a:nth-child(2),
+  .topnav .topCenter a:nth-child(3),
   .topnav .topCenter button {
     display: none;
   }
@@ -251,10 +297,29 @@
     display: block;
   }
 
-  .topnav .topCenter a:nth-child(1) {
-    float: none;
+  .active {
+    border-color: #333;
+  }
+
+  .topnav .topCenter {
+    flex: 13;
+  }
+  .topnav .topRight {
+    flex: 2;
+  }
+
+  .topnav .topCenter .container a {
+    /* float: none; */
+    /* background-color: #333; */
+    /* margin-left: 50%; */
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  .active {
     background-color: #333;
   }
+
   .topnav .topCenter .dropdown .dropdown-content a {
     background-color: #f9f9f9;
   }
@@ -288,7 +353,7 @@
 }
 
 /* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 780px) {
   .topnav.responsive {
     position: sticky;
   }
@@ -297,6 +362,7 @@
     left: 0;
     top: 0;
   }
+  .topnav.responsive a,
   .topnav.responsive .topCenter a,
   .topnav.responsive .topLeft a,
   .topnav.responsive .topRight a {
@@ -314,23 +380,61 @@
   .topnav.responsive {
     display: block;
   }
-  .topnav.responsive .topLeft {
+  .topnav.responsive .active {
+    background-color: teal;
+  }
+  /* .topnav.responsive .topLeft {
     display: block;
     margin-top: 45px;
-  }
+  } */
   .topnav.responsive .topRight {
     display: block;
-  }
-  .topnav.responsive .dropdown {
+    position: relative;
+    /* margin-top: 45px; */
     float: none;
   }
-  .topnav.responsive .topRight {
-    float: none;
+
+  .topnav.responsive .topCenter {
+    margin-top: 50px;
   }
-  .topnav.responsive .dropdown-content {
+
+  /* .topnav.responsive .topCenter a:nth-child(2), */
+  .topnav.responsive .topCenter a:nth-child(3) {
+    display: none;
+  }
+
+  .topnav.responsive .topCenter .dropdown a:nth-child(2) {
+    display: block;
+  }
+
+  .topnav.responsive .topCenter .container .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .topnav.responsive .topCenter a:nth-child(1) {
+    margin: 0;
+  }
+
+  
+
+  .topnav.responsive .dropdown,
+  .topnav.responsive .follow-dropdown,
+  .topnav.responsive .acct-dropdown {
+    float: none;
+    display: block;
+  }
+  /* .topnav.responsive .topRight {
+    float: none;
+  } */
+  .topnav.responsive .dropdown-content,
+  .topnav.responsive .sm-content,
+  .topnav.responsive .acct-content {
     position: relative;
   }
-  .topnav.responsive .dropdown .dropbtn {
+
+  .topnav.responsive .dropdown .dropbtn,
+  .topnav.responsive .follow-dropdown .follow-dropbtn,
+  .topnav.responsive .acct-dropdown .acct-dropbtn {
     display: block;
     width: 100%;
     text-align: left;
@@ -347,7 +451,6 @@
     border-radius: 30px;
     padding: 5px 20px;
     margin-bottom: 5px;
-    
   }
 
   .topnav.responsive .searchDropdown:hover .searchInput {

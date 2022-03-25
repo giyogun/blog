@@ -71,7 +71,8 @@ export const PostsProvider = (props) => {
 
   const getAllPosts = useCallback((res) => {
     if (res.statusText === "OK") {
-      setPosts(res.data);
+      const reverse = res.data.reverse();
+      setPosts(reverse);
     }
   }, []);
 

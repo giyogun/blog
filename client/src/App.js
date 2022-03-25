@@ -9,11 +9,15 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Settings from "./pages/settings/Settings";
 import Single from "./pages/single/Single";
+import NewMeetupForm from "./pages/write/NewMeetupForm";
 import Write from "./pages/write/Write";
 
 function App() {
   const ctx = useContext(PostsContext);
   return (
+    // <NewMeetupForm />
+    // <Write />
+    // <EditorContainer />
     <Fragment>
       {/* <TopBar /> */}
       <Navbar />
@@ -34,8 +38,11 @@ function App() {
           <Single />
         </Route>
         <Route path="/write">
-          {ctx.isLoggedIn ? <Write /> : <Redirect to="/login" />}
+          {ctx.isLoggedIn ? <NewMeetupForm /> : <Redirect to="/login" />}
         </Route>
+        {/* <Route path="/write">
+          {ctx.isLoggedIn ? <Write /> : <Redirect to="/login" />}
+        </Route> */}
       </Switch>
       {/* <EditorContainer /> */}
       {/* <Navbar /> */}

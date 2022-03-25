@@ -1,4 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Link, NavLink } from "react-router-dom";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import "./Navbar.css";
@@ -17,6 +18,7 @@ const Navbar = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const publicFolder = "http://localhost:5000/images/";
   const searchRef = useRef();
+  const history = useHistory();
   let profilePic = <ImUser className="topImg" />;
 
   if (ls) {
@@ -52,9 +54,10 @@ const Navbar = () => {
 
   return (
     <div className={x}>
-      <Link className="icon" onClick={clickHandle}>
+      <Link to="#" className="icon" onClick={clickHandle}>
         &#9776;
       </Link>
+
       <div className="topLeft">
         <a href="https://instagram.com" rel="noreferrer" target="_blank">
           <FaInstagram className="topIcon" />
@@ -70,49 +73,96 @@ const Navbar = () => {
         </a>
       </div>
       <div className="topCenter">
-        <NavLink
-          to="/"
-          exact
-          activeClassName="active"
-          onClick={() => {
-            ctx.resetPosts();
-            removeBarHandler();
-          }}
-        >
-          HOME
-        </NavLink>
-        {/* <NavLink to="/home" activeClassName="active">
+        <div className="container">
+          <NavLink
+            to="/"
+            exact
+            activeClassName="active"
+            onClick={() => {
+              ctx.resetPosts();
+              removeBarHandler();
+            }}
+          >
+            HOME
+          </NavLink>
+          {/* <NavLink to="/home" activeClassName="active">
           ABOUT
         </NavLink> */}
-        <NavLink
+          {/* <NavLink
           to="/write"
           activeClassName="active"
           onClick={removeBarHandler}
         >
           WRITE
-        </NavLink>
-        <div className="dropdown">
-          <button className="dropbtn">
-            Dropdown <IoIosArrowDropdownCircle />
-          </button>
-          <div className="dropdown-content">
-            <Link to="#">Link 1</Link>
-            <Link to="#">Link 2</Link>
-            <Link to="#">Link 3</Link>
+        </NavLink> */}
+          <div className="dropdown">
+            <button
+              className="dropbtn"
+              onClick={() => {
+                if (ctx.isLoggedIn) {
+                  history.replace("/write");
+                  removeBarHandler();
+                  return;
+                }
+              }}
+            >
+              WRITE {!ctx.isLoggedIn && <IoIosArrowDropdownCircle />}
+            </button>
+
+            {!ctx.isLoggedIn && (
+              <div className="dropdown-content">
+                <Link to="/login" onClick={removeBarHandler}>
+                  Login
+                </Link>
+                <Link to="/register" onClick={removeBarHandler}>
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
+          {/* {ctx.isLoggedIn && (
+            <Link
+              to="#"
+              onClick={() => {
+                ctx.logout();
+                history.replace("/")
+              }}
+            >
+              LOGOUT
+            </Link>
+          )} */}
         </div>
-        {/* {ctx.isLoggedIn && (
-          <NavLink
-            to="/"
-            onClick={() => {
-              ctx.logout();
-            }}
-          >
-            LOGOUT
-          </NavLink>
-        )} */}
+      </div>
+      <div className="follow-dropdown">
+        <button className="follow-dropbtn">
+          Follow Me <IoIosArrowDropdownCircle />
+        </button>
+        <div className="sm-content">
+          <Link to="/login" onClick={removeBarHandler}>Link 1</Link>
+          <Link to="#">Link 2</Link>
+          <Link to="#">Link 3</Link>
+        </div>
       </div>
       <div className="topRight">
+        {ctx.isLoggedIn && (
+          <div className="acct-dropdown">
+            <button className="acct-dropbtn">
+              {ls.username} <IoIosArrowDropdownCircle />
+            </button>
+            <div className="acct-content">
+              <Link to="/settings" onClick={removeBarHandler}>My Account</Link>
+              <Link
+                to="/"
+                onClick={() => {
+                  ctx.logout();
+                  removeBarHandler();
+                }}
+              >
+                Logout
+              </Link>
+            </div>
+          </div>
+        )}
         <div className="profileDropdown">
           {ctx.isLoggedIn ? (
             profilePic
@@ -169,6 +219,16 @@ const Navbar = () => {
           </div>
         </form>
       </div>
+      {/* <div className="follow-dropdown">
+        <button className="follow-dropbtn">
+          Follow Me <IoIosArrowDropdownCircle />
+        </button>
+        <div className="sm-content">
+          <Link to="#">Link 1</Link>
+          <Link to="#">Link 2</Link>
+          <Link to="#">Link 3</Link>
+        </div>
+      </div> */}
       {/* <NavLink to="/about">About</NavLink> */}
       {/* <Link to="#" className="icon" onClick={clickHandle}>
         &#9776;
