@@ -4,8 +4,10 @@ import useApiCall from "../hooks/useApiCall";
 
 const PostsContext = React.createContext({
   blogPosts: [],
+  blogPost: {},
   searchedPosts: [],
   isLoggedIn: false,
+  isLoading: true,
   // post: {},
   error: null,
   categories: [],
@@ -38,8 +40,8 @@ export const PostsProvider = (props) => {
   const [posts, setPosts] = useState([]);
   const [posts1, setPosts1] = useState([]);
   const [cats, setCats] = useState([]);
-  // const [singlePost, setSinglePost] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(!!ls);
+  const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
 
   const getAllCats = useCallback((res) => {
@@ -54,6 +56,7 @@ export const PostsProvider = (props) => {
     (res) => {
       if (res.statusText === "OK") {
         history.replace("/posts/" + res.data._id);
+        setIsLoading(false);
       }
     },
     [history]
@@ -61,11 +64,15 @@ export const PostsProvider = (props) => {
 
   const { queryPosts: createPostQuery } = useApiCall(createPostFunc);
 
-  const updatePostFunc = useCallback((res) => {
-    if (res.statusText === "OK") {
-      history.replace("/posts/" + res.data._id);
-    }
-  }, [history]);
+  const updatePostFunc = useCallback(
+    (res) => {
+      if (res.statusText === "OK") {
+        history.replace("/posts/" + res.data._id);
+        setIsLoading(false);
+      }
+    },
+    [history]
+  );
 
   const { queryPosts: updatePostQuery } = useApiCall(updatePostFunc);
 
@@ -73,15 +80,16 @@ export const PostsProvider = (props) => {
     if (res.statusText === "OK") {
       const reverse = res.data.reverse();
       setPosts(reverse);
+      setIsLoading(false);
     }
   }, []);
 
   const { queryPosts } = useApiCall(getAllPosts);
 
-
   const getPostsByUser = useCallback((res) => {
     if (res.statusText === "OK") {
-      setPosts(res.data);
+      const reverse = res.data.reverse();
+      setPosts(reverse);
     }
   }, []);
 
@@ -93,6 +101,7 @@ export const PostsProvider = (props) => {
         console.log("Post Deleted");
         queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
         history.replace("/");
+        setIsLoading(false);
       }
     },
     [history, queryPosts]
@@ -104,10 +113,10 @@ export const PostsProvider = (props) => {
     const filteredPosts = res.data.filter((m) => m.categories.includes(cat));
 
     setPosts(filteredPosts);
+    setIsLoading(false);
   }, []);
 
   const { queryPosts: filterPosts } = useApiCall(filterAllPosts);
-
 
   const searchPosts = useCallback((res, cat, title) => {
     const posts = res.data.filter((m) => m.title.includes(capitalize(title)));
@@ -133,10 +142,10 @@ export const PostsProvider = (props) => {
 
   const { queryPosts: userLogin } = useApiCall(loginApi);
 
-
   const registration = (res) => {
     // if (!res.statusText === "OK") {
-      setErrorMessage(res);
+    setErrorMessage(res);
+    setIsLoading(false);
     // }
   };
 
@@ -151,6 +160,7 @@ export const PostsProvider = (props) => {
     getCats({ method: "GET", url: `${BASE_URL}/categories` });
   }, [getCats]);
 
+
   const getPostsByUserHandler = (name) => {
     queryPostByUser({
       method: "GET",
@@ -159,6 +169,7 @@ export const PostsProvider = (props) => {
   };
 
   const createPostHandler = (config) => {
+    setIsLoading(true);
     createPostQuery({
       method: "POST",
       url: `http://localhost:5000/api/posts/`,
@@ -167,6 +178,7 @@ export const PostsProvider = (props) => {
   };
 
   const updatePostHandler = (config) => {
+    setIsLoading(true);
     updatePostQuery({
       method: "PUT",
       url: `http://localhost:5000/api/posts/${config.id}`,
@@ -175,6 +187,7 @@ export const PostsProvider = (props) => {
   };
 
   const deletePostHandler = (config) => {
+    setIsLoading(true);
     deletePostQuery({
       method: "DELETE",
       url: `http://localhost:5000/api/posts/${config.id}`,
@@ -183,6 +196,7 @@ export const PostsProvider = (props) => {
   };
 
   const registrationHandler = (username, email, password) => {
+    setIsLoading(true);
     registerQuery({
       url: `${BASE_URL}/auth/register`,
       method: "POST",
@@ -208,6 +222,7 @@ export const PostsProvider = (props) => {
   };
 
   const filterPostsHandler = (category) => {
+    setIsLoading(true);
     filterPosts({ method: "GET", url: `${BASE_URL}/posts` }, category);
   };
 
@@ -232,6 +247,7 @@ export const PostsProvider = (props) => {
     blogPosts: posts,
     searchedPosts: posts1,
     isLoggedIn: isLoggedIn,
+    isLoading: isLoading,
     // post: singlePost,
     error: errorMessage,
     categories: cats,

@@ -12,9 +12,12 @@ import {
 } from "react-icons/fa";
 import PostsContext from "../../context/postsContext";
 import { ImUser } from "react-icons/im";
+import NavbarModal from "./modal/NavbarModal";
 
 const Navbar = () => {
   const ctx = useContext(PostsContext);
+  const [x, setX] = useState("topnav");
+  const [showModal, setShowModal] = useState(false);
   const ls = JSON.parse(localStorage.getItem("user"));
   const publicFolder = "http://localhost:5000/images/";
   const searchRef = useRef();
@@ -33,12 +36,13 @@ const Navbar = () => {
     }
   }
 
-  const [x, setX] = useState("topnav");
   const clickHandle = () => {
     if (x === "topnav") {
       setX("topnav responsive");
+      setShowModal(true);
     } else {
       setX("topnav");
+      setShowModal(false);
     }
   };
 
@@ -50,6 +54,7 @@ const Navbar = () => {
 
   const removeBarHandler = () => {
     setX("topnav");
+    setShowModal(false);
   };
 
   return (
@@ -57,6 +62,17 @@ const Navbar = () => {
       <Link to="#" className="icon" onClick={clickHandle}>
         &#9776;
       </Link>
+      {showModal && (
+        <NavbarModal
+          className="icon"
+          close={() => {
+            if (x === "topnav responsive") {
+              setX("topnav");
+              setShowModal(false);
+            }
+          }}
+        />
+      )}
 
       <div className="topLeft">
         <a href="https://instagram.com" rel="noreferrer" target="_blank">
@@ -85,16 +101,7 @@ const Navbar = () => {
           >
             HOME
           </NavLink>
-          {/* <NavLink to="/home" activeClassName="active">
-          ABOUT
-        </NavLink> */}
-          {/* <NavLink
-          to="/write"
-          activeClassName="active"
-          onClick={removeBarHandler}
-        >
-          WRITE
-        </NavLink> */}
+
           <div className="dropdown">
             <button
               className="dropbtn"
@@ -120,17 +127,6 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          {/* {ctx.isLoggedIn && (
-            <Link
-              to="#"
-              onClick={() => {
-                ctx.logout();
-                history.replace("/")
-              }}
-            >
-              LOGOUT
-            </Link>
-          )} */}
         </div>
       </div>
       <div className="follow-dropdown">
@@ -138,7 +134,9 @@ const Navbar = () => {
           Follow Me <IoIosArrowDropdownCircle />
         </button>
         <div className="sm-content">
-          <Link to="/login" onClick={removeBarHandler}>Link 1</Link>
+          <Link to="/login" onClick={removeBarHandler}>
+            Link 1
+          </Link>
           <Link to="#">Link 2</Link>
           <Link to="#">Link 3</Link>
         </div>
@@ -150,7 +148,9 @@ const Navbar = () => {
               {ls.username} <IoIosArrowDropdownCircle />
             </button>
             <div className="acct-content">
-              <Link to="/settings" onClick={removeBarHandler}>My Account</Link>
+              <Link to="/settings" onClick={removeBarHandler}>
+                My Account
+              </Link>
               <Link
                 to="/"
                 onClick={() => {
@@ -164,13 +164,7 @@ const Navbar = () => {
           </div>
         )}
         <div className="profileDropdown">
-          {ctx.isLoggedIn ? (
-            profilePic
-          ) : (
-            <Link to="/login" className="link">
-              LOGIN
-            </Link>
-          )}
+          {ctx.isLoggedIn && profilePic}
           {ctx.isLoggedIn && (
             <div className="topDropdownContent">
               <Link to="/settings" onClick={removeBarHandler}>
@@ -199,7 +193,10 @@ const Navbar = () => {
             />
             <FaSearch
               className="topSearchIcon"
-              onClick={() => setX("topnav responsive")}
+              onClick={() => {
+                setX("topnav responsive");
+                setShowModal(true);
+              }}
             />
             <div className="searchResults">
               {ctx.searchedPosts.map((m) => (
@@ -219,20 +216,6 @@ const Navbar = () => {
           </div>
         </form>
       </div>
-      {/* <div className="follow-dropdown">
-        <button className="follow-dropbtn">
-          Follow Me <IoIosArrowDropdownCircle />
-        </button>
-        <div className="sm-content">
-          <Link to="#">Link 1</Link>
-          <Link to="#">Link 2</Link>
-          <Link to="#">Link 3</Link>
-        </div>
-      </div> */}
-      {/* <NavLink to="/about">About</NavLink> */}
-      {/* <Link to="#" className="icon" onClick={clickHandle}>
-        &#9776;
-      </Link> */}
     </div>
   );
 };

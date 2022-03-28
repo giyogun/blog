@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 90%;
 }
 
 .sidebarTitle {
@@ -31,10 +32,16 @@
 
 .sidebarItem img {
   margin-top: 15px;
+  height: 300px;
+  width: 300px;
 }
 
-.sidebarItem p {
+.sidebarItem article {
   padding: 30px;
+  font-family: "Varela Round", sans-serif;
+  font-size: 12px;
+  white-space:pre-line;
+  line-height: 20px;
 }
 
 .sidebarList {
@@ -70,9 +77,44 @@
 }
 
 @media screen and (max-width: 780px) {
-  .sidebar {
+  /* .sidebar .sidebarItem:not(:last-child) {
     display: none;
+  } */
+
+  .sidebar {
+    display: block;
+    width: 95%;
+    margin-left: 10px;
+    padding-bottom: 30px;
+    background-color: #fdfbfb;
+    
+    /* margin: 0 auto; */
   }
+
+  .sidebarTitle {
+    margin: 5px;
+    padding: 5px;
+    /* margin-right: 55px;
+    margin-left: 20px; */
+    border-top: hidden;
+    border-bottom: hidden;
+    font-family: "Varela Round", sans-serif;
+    text-align: center;
+  }
+
+  .sidebarSocial a {
+    margin-left: 30px;
+  }
+  .sidebarSocial {
+    display: block;
+    /* margin-left: 0; */
+  }
+
+  /* .sidebar .sidebarItem .foot {
+    display: block;
+    position: relative;
+    margin-top: 15px;
+  } */
 }
 
 /* @media (min-width: 1000px) {

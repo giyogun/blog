@@ -63,3 +63,22 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
 }
+
+@media screen and (max-width: 780px) {
+  .post {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .postDesc {
+    width: 90%;
+    text-align: center;
+  }
+
+  .postImg {
+    margin-top: 50px;
+  }
+  .postInfo {
+    margin-top: 15px;
+  }
+}

@@ -33,15 +33,13 @@
   font-size: 17px;
 }
 
-.topLeft, .topRight {
+.topLeft,
+.topRight {
   flex: 3;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-
-
 
 .container {
   /* right: 50; */
@@ -282,6 +280,10 @@
   position: fixed;
 }
 
+.backdrop {
+  /* display: none; */
+}
+
 /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
 @media screen and (max-width: 780px) {
   .topnav .topLeft,
@@ -328,6 +330,13 @@
     background-color: #333;
     margin-left: 10px;
     box-shadow: none;
+    text-shadow: none;
+    border-radius: 0;
+    /* width: 0px; */
+  }
+
+  .topnav .searchContainer:hover > .searchInput {
+    width: 0;
   }
 
   .topSearchIcon {
@@ -371,6 +380,7 @@
     /* flex-direction: column; */
     text-align: left;
   }
+
   /* .topnav.responsive a {
     float: none;
     display: block;
@@ -414,8 +424,6 @@
   .topnav.responsive .topCenter a:nth-child(1) {
     margin: 0;
   }
-
-  
 
   .topnav.responsive .dropdown,
   .topnav.responsive .follow-dropdown,

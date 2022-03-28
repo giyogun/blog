@@ -14,6 +14,7 @@ const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
   const location = useLocation();
   const postId = location.search.split("=")[1];
   const editor = useRef();
+  const x = location.pathname.split("/")[1];
 
   const getOnePost = useCallback((res) => {
     if (res.statusText === "OK") {
@@ -38,6 +39,8 @@ const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
     let html = stateToHTML(editorState.getCurrentContent());
     value(html);
   }, [value, editorState]);
+
+  console.log(x);
 
   const uploadImageCallback = (file) => {
     // return new Promise((resolve, reject) => {
@@ -77,22 +80,25 @@ const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
         wrapperClassName="demo-wrapper"
         onChange={() => {
           console.log(editor.current.editor.editor.innerText);
-          inner(editor.current.editor.editor.innerText)
+          inner(editor.current.editor.editor.innerText);
           // value(editor.current.editor.editor.innerText);
         }}
         ref={editor}
         toolbar={{
-          options: [
-            "inline",
-            "blockType",
-            "list",
-            "textAlign",
-            "fontSize",
-            "list",
-            "link",
-            "embedded",
-            "image",
-          ],
+          options:
+            x === "settings"
+              ? ["list", "textAlign"]
+              : [
+                  "inline",
+                  "blockType",
+                  "list",
+                  "textAlign",
+                  "fontSize",
+                  "list",
+                  "link",
+                  "embedded",
+                  "image",
+                ],
           inline: {
             inDropdown: true,
             options: [

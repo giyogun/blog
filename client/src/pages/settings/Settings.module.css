@@ -1,9 +1,9 @@
 .settings {
-  display: flex;
+  display: block;
 }
 
 .settingsWrapper {
-  flex: 9;
+  /* flex: 9; */
   padding: 20px;
 }
 
@@ -70,11 +70,28 @@
 
 .settingsForm input {
   color: gray;
+  font-size: 14px;
   margin: 10px 0;
   height: 30px;
   border: none;
   border-bottom: 1px solid lightgray;
 }
+
+.settingsForm textarea {
+  color: gray;
+  margin: 10px 0;
+  height: 10vh;
+  border: none;
+  border-bottom: 1px solid lightgray;
+  /* white-space: pre; */
+}
+
+.settingsForm textarea:focus {
+  height: 10vh;
+  overflow:scroll;
+}
+
+
 
 .settingsForm input:first-child:disabled,
 .settingsForm input:first-child:disabled:hover,

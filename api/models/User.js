@@ -20,6 +20,22 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    profileBio: {
+      type: String,
+      default: "",
+    },
+    twitterAcct: {
+      type: String,
+      default: "",
+    },
+    facebookAcct: {
+      type: String,
+      default: "",
+    },
+    linkedInAcct: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

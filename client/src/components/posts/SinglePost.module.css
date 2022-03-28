@@ -96,6 +96,7 @@ figure + p::first-letter {
 
 @media screen and (max-width: 780px) {
   .singlePost {
+    display: block;
     width: 95%;
   }
   .singlePost p {
@@ -113,10 +114,4 @@ figure + p::first-letter {
     width: 95%;
   }
 
-  .singlePostDate {
-    /* display: flex; */
-    /* position: absolute; */
-    /* margin-left: 400px; */
-    /* justify-content: flex-end; */
-  }
 }

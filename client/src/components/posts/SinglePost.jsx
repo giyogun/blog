@@ -81,7 +81,6 @@ const SinglePost = (props) => {
     history.push(`/write?edit=${postId}`);
   };
 
-
   return (
     <Fragment>
       <div className={classes.singlePost}>
@@ -132,7 +131,10 @@ const SinglePost = (props) => {
               {postDateHandler(new Date(post.createdAt))}
             </span>
           </div>
-          <div dangerouslySetInnerHTML={{__html:post["description"]}} className={classes.fullPost}></div>
+          <div
+            dangerouslySetInnerHTML={{ __html: post["description"] }}
+            className={classes.fullPost}
+          ></div>
         </div>
       </div>
     </Fragment>

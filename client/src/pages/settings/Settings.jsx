@@ -4,14 +4,22 @@ import classes from "./Settings.module.css";
 import { FaRegUserCircle } from "react-icons/fa";
 import { ImUser } from "react-icons/im";
 import useApiCall from "../../hooks/useApiCall";
+import EditorContainer from "../../components/draftjs/EditorContainer";
+import RichEditor from "../../components/draftjs/RichEditor";
 
 const Settings = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const { profilePic } = ls;
   const [selectedFile, setSelectedFile] = useState(null);
   const [ppIsValid, setPpIsValid] = useState(!!profilePic);
+  const [bio, setBio] = useState("");
+  const [inner, setInner] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
+  // const bioRef = useRef();
+  const twitterRef = useRef();
+  const facebookRef = useRef();
+  const linkedInRef = useRef();
   const publicFolder = "http://localhost:5000/images/";
 
   const userUpdate = useCallback((res) => {
@@ -54,18 +62,18 @@ const Settings = () => {
       newUserInfo.password = password;
     }
 
-    if (selectedFile) {
-      const data = new FormData();
-      const filename = Date.now() + selectedFile.name;
-      data.append("name", filename);
-      data.append("file", selectedFile);
-      newUserInfo.profilePic = filename;
-      uploadImageQuery({
-        url: `http://localhost:5000/api/upload`,
-        method: "POST",
-        body: data,
-      });
-    }
+    // if (selectedFile) {
+    //   const data = new FormData();
+    //   const filename = Date.now() + selectedFile.name;
+    //   data.append("name", filename);
+    //   data.append("file", selectedFile);
+    //   newUserInfo.profilePic = filename;
+    //   uploadImageQuery({
+    //     url: `http://localhost:5000/api/upload`,
+    //     method: "POST",
+    //     body: data,
+    //   });
+    // }
 
     const canMakePostReq = !!email || !!password || selectedFile;
 
@@ -79,6 +87,62 @@ const Settings = () => {
     console.log(ppIsValid);
   };
 
+  const profileHandler = (e) => {
+    e.preventDefault();
+
+    // const bio = bioRef.current.value;
+    const twitter = twitterRef.current.value;
+    const facebook = facebookRef.current.value;
+    const linkedIn = linkedInRef.current.value;
+
+    const words = bio.split(" ");
+    if (words.length < 5 && inner) {
+      window.alert(
+        "Surely there's more to know about you than " + words.length + " words!"
+      );
+      return;
+    }
+
+    const newUserInfo = { userId: ls._id };
+
+    if (!!bio) {
+      newUserInfo.profileBio = bio;
+    }
+    if (!!twitter) {
+      newUserInfo.twitterAcct = twitter;
+    }
+    if (!!facebook) {
+      newUserInfo.facebookAcct = facebook;
+    }
+    if (!!linkedIn) {
+      newUserInfo.linkedInAcct = linkedIn;
+    }
+
+    if (selectedFile) {
+      const data = new FormData();
+      const filename = Date.now() + selectedFile.name;
+      data.append("name", filename);
+      data.append("file", selectedFile);
+      newUserInfo.profilePic = filename;
+      uploadImageQuery({
+        url: `http://localhost:5000/api/upload`,
+        method: "POST",
+        body: data,
+      });
+    }
+
+    const canMakePostReq =
+      !!bio || !!twitter || facebook || linkedIn || selectedFile;
+
+    if (canMakePostReq) {
+      queryPosts({
+        url: `http://localhost:5000/api/users/${ls._id}`,
+        method: "PUT",
+        body: newUserInfo,
+      });
+    }
+  };
+
   let picSrc = publicFolder + ls.profilePic;
 
   if (selectedFile) {
@@ -88,12 +152,9 @@ const Settings = () => {
     <div className={classes.settings}>
       <div className={classes.settingsWrapper}>
         <div className={classes.settingsTitle}>
-          <span className={classes.settingsUpdateTitle}>
-            Update Your Account
-          </span>
-          <span className={classes.settingsDeleteTitle}>Delete Account</span>
+          <span className={classes.settingsUpdateTitle}>My Profile</span>
         </div>
-        <form className={classes.settingsForm} onSubmit={updateInfoHandler}>
+        <form className={classes.settingsForm} onSubmit={profileHandler}>
           <label>Profile Picture</label>
           <div className={classes.settingsPP}>
             {ppIsValid ? (
@@ -112,6 +173,70 @@ const Settings = () => {
               onChange={picChangeHandler}
             />
           </div>
+          <label>Public Bio</label>
+          <textarea  placeholder="Let your readers know about you..." defaultValue={ls.profileBio ? ls.profileBio : ""} onChange={(e)=>setBio(e.target.value)} />
+          {/* <RichEditor
+            className={classes.editor}
+            placeholder={
+              ls.profileBio
+                ? ls.profileBio
+                : "Let your readers know about you..."
+            }
+            defaultValue={ls.profileBio && ls.profileBio}
+            value={(enteredText) => setBio(enteredText)}
+            inner={(text) => {
+              if (text) setInner(true);
+            }}
+          /> */}
+          <label>Twitter</label>
+          <input
+            type="text"
+            ref={twitterRef}
+            placeholder="Enter your Twitter username"
+            defaultValue={ls.twitterAcct && ls.twitterAcct}
+          />
+          <label>Facebook</label>
+          <input
+            type="text"
+            ref={facebookRef}
+            placeholder="Enter your Facebook username"
+            defaultValue={ls.facebookAcct && ls.facebookAcct}
+
+          />
+          <label>LinkedIn</label>
+          <input
+            type="text"
+            ref={linkedInRef}
+            placeholder="Enter your LinkedIn username"
+            defaultValue={ls.linkedInAcct && ls.linkedInAcct}
+          />
+          <button className={classes.settingsSubmit}>Save Changes</button>
+        </form>
+      </div>
+      <div className={classes.settingsWrapper}>
+        <div className={classes.settingsTitle}>
+          <span className={classes.settingsUpdateTitle}>Account Settings</span>
+          <span className={classes.settingsDeleteTitle}>Delete Account</span>
+        </div>
+        <form className={classes.settingsForm} onSubmit={updateInfoHandler}>
+          {/* <label>Profile Picture</label>
+          <div className={classes.settingsPP}>
+            {ppIsValid ? (
+              <img src={picSrc} alt="" />
+            ) : (
+              <ImUser className={classes.ppIcon} />
+            )}
+            <label htmlFor="fileInput">
+              <FaRegUserCircle className={classes.settingsPPIcon} />
+            </label>
+            <input
+              type="file"
+              id="fileInput"
+              style={{ display: "none" }}
+              accept=".jpg, .JPG, .jpeg, .JPEG, .png, .PNG"
+              onChange={picChangeHandler}
+            />
+          </div> */}
           <label>Username</label>
           <input type="text" value={ls.username} disabled />
           <label>Email</label>
@@ -121,7 +246,7 @@ const Settings = () => {
           <button className={classes.settingsSubmit}>Update</button>
         </form>
       </div>
-      <Sidebar />
+      {/* <Sidebar /> */}
     </div>
   );
 };
