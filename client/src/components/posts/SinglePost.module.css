@@ -51,7 +51,8 @@
 .fullPost {
   color: #656;
   font-size: 18px;
-  line-height: 25px;
+  line-height: 20px;
+  margin: 5px 0;
 }
 
 figure + p::first-letter {
@@ -69,6 +70,10 @@ figure + p::first-letter {
 .fullPost img {
   height: 300px;
   width: 100%;
+}
+
+.fullPost a {
+  color: inherit;
 }
 
 .singlePostAuthor {
@@ -113,5 +118,9 @@ figure + p::first-letter {
     display: flex;
     width: 95%;
   }
+
+.fullPost a {
+  color: red;
+}
 
 }

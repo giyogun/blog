@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import PostsContext from "../../context/postsContext";
 import { ImUser } from "react-icons/im";
+import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import NavbarModal from "./modal/NavbarModal";
 
 const Navbar = () => {
@@ -57,10 +58,15 @@ const Navbar = () => {
     setShowModal(false);
   };
 
+  let icon = <AiOutlineMenu style={{fontSize: "22px", outline: "none"}} />;
+  if (x === "topnav responsive") {
+    icon = <AiOutlineClose style={{fontSize: "22px"}} />;
+  }
+
   return (
     <div className={x}>
       <Link to="#" className="icon" onClick={clickHandle}>
-        &#9776;
+        {icon}
       </Link>
       {showModal && (
         <NavbarModal

@@ -71,56 +71,51 @@ const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
   };
 
   return (
-    <div className="editor">
-      <Editor
-        editorState={editorState}
-        onEditorStateChange={setEditorState}
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        wrapperClassName="demo-wrapper"
-        onChange={() => {
-          console.log(editor.current.editor.editor.innerText);
-          inner(editor.current.editor.editor.innerText);
-          // value(editor.current.editor.editor.innerText);
-        }}
-        ref={editor}
-        toolbar={{
-          options:
-            x === "settings"
-              ? ["list", "textAlign"]
-              : [
-                  "inline",
-                  "blockType",
-                  "list",
-                  "textAlign",
-                  "fontSize",
-                  "list",
-                  "link",
-                  "embedded",
-                  "image",
-                ],
-          inline: {
-            inDropdown: true,
-            options: [
-              "bold",
-              "italic",
-              "underline",
-              "strikethrough",
-              "monospace",
-            ],
-          },
-          blockType: { inDropdown: false, options: ["H1", "H2", "H3"] },
-          list: { inDropdown: true },
-          // textAlign: { inDropdown: true },
-          // link: { inDropdown: true },
-          // // history: { inDropdown: true },
-          image: {
-            uploadCallback: uploadImageCallback,
-            alt: { present: true, mandatory: true },
-          },
-        }}
-      />
-    </div>
+    <Editor
+      editorState={editorState}
+      onEditorStateChange={setEditorState}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      wrapperClassName="demo-wrapper"
+      onChange={() => {
+        console.log(editor.current.editor.editor.innerText);
+        inner(editor.current.editor.editor.innerText);
+        // value(editor.current.editor.editor.innerText);
+      }}
+      ref={editor}
+      toolbar={{
+        options:
+          x === "settings"
+            ? ["list", "textAlign"]
+            : [
+                "inline",
+                "blockType",
+                "list",
+                "textAlign",
+                "fontSize",
+                "list",
+                "link",
+                "embedded",
+                "image",
+              ],
+        inline: {
+          inDropdown: true,
+          options: [
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "monospace",
+          ],
+        },
+        blockType: { inDropdown: false, options: ["H1", "H2", "H3"] },
+        list: { inDropdown: true },
+        image: {
+          // uploadCallback: uploadImageCallback,
+          alt: { present: true, mandatory: true },
+        },
+      }}
+    />
   );
 };
 
