@@ -11,7 +11,6 @@ import {
   FaFacebookSquare,
   FaTwitter,
   FaPinterest,
-  FaInstagram,
   FaLinkedin,
 } from "react-icons/fa";
 import PostsContext from "../../context/postsContext";
@@ -27,7 +26,7 @@ const Sidebar = () => {
 
   const singleUser = useCallback((res) => {
     setUserData(res.data);
-    console.log(res);
+    // console.log(res);
   }, []);
   const { queryPosts: queryUser } = useApiCall(singleUser);
 
@@ -59,7 +58,7 @@ const Sidebar = () => {
     } else {
       return;
     }
-    console.log(1);
+    // console.log(1);
   }, [queryUser, post.userId]);
 
 

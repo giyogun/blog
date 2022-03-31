@@ -13,6 +13,7 @@ import useApiCall from "../../hooks/useApiCall";
 import { Link } from "react-router-dom";
 import DeleteModal from "../UI/DeleteModal";
 
+
 const postDateHandler = (x) => {
   let displayedDate;
   const now = new Date();
@@ -58,6 +59,7 @@ const SinglePost = (props) => {
 
   const getOnePost = useCallback((res) => {
     setPost(res.data);
+    localStorage.setItem("db", JSON.stringify(res.data));
   }, []);
 
   const { queryPosts: singlePostQuery } = useApiCall(getOnePost);

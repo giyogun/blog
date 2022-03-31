@@ -13,4 +13,5 @@
 }
 .public-DraftEditor-content {
   font-size: 14px;
+  max-width: 90%;
 }

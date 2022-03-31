@@ -66,7 +66,7 @@ const Draftail = ({ defaultValue, placeholder, value }) => {
     console.log(111);
   }, [value, editorState]);
 
-  const handleKeyCommand = (command, editorState) => {
+  const handleKeyCommand = (command) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
 
     if (newState) {
@@ -136,9 +136,9 @@ const Draftail = ({ defaultValue, placeholder, value }) => {
 
 
   return (
-    <div
-      className="App"
-      onPointerUp={mouseUpHandler}
+    <Fragment
+      // className="App"
+      // onPointerUp={mouseUpHandler}
       // onPointerDown={mouseDownHandler}
     >
       {/* {bold} */}
@@ -155,7 +155,7 @@ const Draftail = ({ defaultValue, placeholder, value }) => {
       {/* <SimpleImageEditor /> */}
       <InlineToolbar />
       <SideToolbar />
-    </div>
+    </Fragment>
   );
 };
 

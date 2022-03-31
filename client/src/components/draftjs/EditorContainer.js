@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { EditorState } from "draft-js";
+import { EditorState, convertToRaw, convertFromRaw, RichUtils } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { convertFromHTML } from "draft-convert";
 import { stateToHTML } from "draft-js-export-html";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./EditorContainer.css";
 import { useLocation } from "react-router";
 import useApiCall from "../../hooks/useApiCall";
+
+// const ls = JSON.parse(localStorage.getItem("postData"));
 
 const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -18,9 +19,10 @@ const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
 
   const getOnePost = useCallback((res) => {
     if (res.statusText === "OK") {
-      setEditorState(
-        EditorState.createWithContent(convertFromHTML(res.data.description))
-      );
+      const raw = res.data;
+      const toJSON = JSON.parse(raw.rawDescription);
+      const content = convertFromRaw(toJSON);
+      setEditorState(EditorState.createWithContent(content));
     }
   }, []);
 
@@ -35,69 +37,44 @@ const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
     }
   }, [singlePostQuery, postId]);
 
-  useEffect(() => {
-    let html = stateToHTML(editorState.getCurrentContent());
-    value(html);
-  }, [value, editorState]);
+  const handleKeyCommand = (command) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
 
-  console.log(x);
-
-  const uploadImageCallback = (file) => {
-    // return new Promise((resolve, reject) => {
-    //   const xhr = new XMLHttpRequest();
-    //   xhr.open("POST", "http://localhost:5000/api/upload");
-    //   // xhr.setRequestHeader("Authorization", "Client-ID ##clientid##");
-    //   const data = new FormData();
-    //   const filename = Date.now() + file.name;
-    //   data.append("name", filename);
-    //   data.append("file", file);
-    //   // await axios.post("http://localhost:5000/api/upload", data);
-    //   xhr.send(data);
-    //   xhr.addEventListener("load", () => {
-    //     const response = JSON.parse(xhr.responseText);
-    //     console.log(response);
-    //     resolve(response);
-    //   });
-    //   xhr.addEventListener("error", () => {
-    //     const error = JSON.parse(xhr.responseText);
-    //     console.log(error);
-    //     reject(error);
-    //   });
-    // });
-    var imgSrc = prompt("Enter image location", "");
-    imgSrc.height = "100px";
-    imgSrc.width = "50px";
-    document.execCommand();
+    if (newState) {
+      setEditorState(newState);
+      return true;
+    }
+    return false;
   };
 
   return (
     <Editor
       editorState={editorState}
       onEditorStateChange={setEditorState}
+      handleKeyCommand={handleKeyCommand}
       placeholder={placeholder}
       defaultValue={defaultValue}
       wrapperClassName="demo-wrapper"
-      onChange={() => {
-        console.log(editor.current.editor.editor.innerText);
-        inner(editor.current.editor.editor.innerText);
-        // value(editor.current.editor.editor.innerText);
+      onChange={(e) => {
+        let html = stateToHTML(editorState.getCurrentContent());
+        value(html);
+        const raw = convertToRaw(editorState.getCurrentContent());
+        inner(raw);
       }}
       ref={editor}
       toolbar={{
-        options:
-          x === "settings"
-            ? ["list", "textAlign"]
-            : [
-                "inline",
-                "blockType",
-                "list",
-                "textAlign",
-                "fontSize",
-                "list",
-                "link",
-                "embedded",
-                "image",
-              ],
+        options: [
+          "inline",
+          "blockType",
+          "list",
+          "textAlign",
+          "fontSize",
+          "list",
+          "link",
+          "embedded",
+          "image",
+        ],
+        textAlign: { inDropdown: true },
         inline: {
           inDropdown: true,
           options: [
@@ -109,9 +86,8 @@ const EditorContainer = ({ defaultValue, placeholder, value, inner }) => {
           ],
         },
         blockType: { inDropdown: false, options: ["H1", "H2", "H3"] },
-        list: { inDropdown: true },
+        list: { inDropdown: false },
         image: {
-          // uploadCallback: uploadImageCallback,
           alt: { present: true, mandatory: true },
         },
       }}

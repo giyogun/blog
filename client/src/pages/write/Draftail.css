@@ -1,6 +1,6 @@
 .App {
   font-family: sans-serif;
-  text-align: center;
+  /* text-align: center; */
   display: block;
 }
 /* Override default */
@@ -32,8 +32,8 @@
   display:inline;
   position:fixed;
   z-index: 100;
-  /* top: 20px;
-  left: 50px; */
+  top: 20px;
+  left: 50px;
   background-color: teal;
   /* height: 25px; */
   /* height: 45px;

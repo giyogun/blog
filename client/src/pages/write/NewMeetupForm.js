@@ -4,6 +4,9 @@ import { useHistory, useLocation } from "react-router";
 import EditorContainer from "../../components/draftjs/EditorContainer";
 import PostsContext from "../../context/postsContext";
 import useApiCall from "../../hooks/useApiCall";
+import AltEditor from "../../store/AltEditor";
+import RichEditor from "../../store/AltEditor";
+import MyEditor from "../../store/useImage";
 import Draftail from "./Draftail";
 
 import classes from "./NewMeetupForm.module.css";
@@ -19,7 +22,7 @@ function NewMeetupForm(props) {
   const [isEditState, setIsEditState] = useState(false);
   const titleRef = useRef();
   const [bodyText, setBodyText] = useState(null);
-  const [inner, setInner] = useState(null);
+  const [rawBodyText, setRawBodyText] = useState(null);
   const postId = location.search.split("=")[1];
   const publicFolder = "http://localhost:5000/images/";
 
@@ -67,6 +70,7 @@ function NewMeetupForm(props) {
       const updatedPost = {
         title: newTitle,
         description: bodyText,
+        rawDescription: JSON.stringify(rawBodyText),
         id: post._id,
         username: post.username,
       };
@@ -95,6 +99,7 @@ function NewMeetupForm(props) {
       const newPost = {
         title: newTitle,
         description: bodyText,
+        rawDescription: JSON.stringify(rawBodyText),
         username: ls.username,
         userId: _id,
       };
@@ -121,6 +126,9 @@ function NewMeetupForm(props) {
         window.alert("You need to type at least 100 words!");
       } else {
         ctx.createPost(newPost);
+        // console.log(newPost);
+        localStorage.setItem("testData", JSON.stringify(rawBodyText));
+        localStorage.setItem("pData", JSON.stringify(newPost));
       }
     }
   };
@@ -135,7 +143,7 @@ function NewMeetupForm(props) {
       window.alert("Only images allowed");
     }
     console.log(bodyText);
-    console.log(inner);
+    console.log(rawBodyText);
   };
 
   let pic;
@@ -188,13 +196,21 @@ function NewMeetupForm(props) {
             placeholder={!isEditState ? "Tell your story..." : ""}
             defaultValue={isEditState ? bodyText : ""}
             value={(enteredText) => setBodyText(enteredText)}
-            inner={(text) => setInner(text)}
+            inner={(text) => setRawBodyText(text)}
           />
           {/* <Draftail
           placeholder={!isEditState ? "Tell your story..." : ""}
           defaultValue={isEditState ? bodyText : ""}
           value={(enteredText) => setBodyText(enteredText)}
         /> */}
+          {/* <MyEditor
+            placeholder={!isEditState ? "Tell your story..." : ""}
+            defaultValue={isEditState ? bodyText : ""}
+            value={(enteredText) => setBodyText(enteredText)}
+            inner={(text) => setInner(text)}
+          /> */}
+          {/* <RichEditor /> */}
+          {/* <AltEditor /> */}
         </div>
         <div className={classes.actions}>
           <button>Publish</button>
