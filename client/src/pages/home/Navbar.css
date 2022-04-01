@@ -24,7 +24,7 @@
 
 /* Style the links inside the navigation bar */
 .topnav a {
-  float: left;
+  /* float: none; */
   display: block;
   color: #f2f2f2;
   text-align: center;
@@ -41,28 +41,34 @@
   justify-content: center;
 }
 
-.container {
-  /* right: 50; */
-  /* float: right; */
-  /* margin-left: 50px; */
-  /* position: absolute; */
-  /* float: right; */
-  display: block;
-  margin: 0 auto;
-  /* margin: 0 auto; */
-}
-
-.container a {
-  /* margin-left: 35px; */
-  /* align-items: center;
+.topCenter {
+  /* padding: 9px 16px; */
+  /* float: left; */
+  /* overflow: hidden; */
+  flex: 6;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin-left: 175px; */
-  /* justify-self: center; */
 }
 
-.topCenter .dropdown-content a {
-  margin: 0;
+.container  {
+  /* left: 0; */
+  /* overflow: hidden; */
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+/* .container a {
+  padding: 9px 16px;
+
+} */
+/* .topCenter .container {
+  padding: 9px 16px;
+
+} */
+
+
 
 .topIcon {
   font-size: 20px;
@@ -72,11 +78,11 @@
 }
 
 .link {
-  text-decoration: none;
+  /* text-decoration: none;
   color: inherit;
   font-size: 18px;
   font-weight: 300;
-  margin-right: 5px;
+  margin-right: 5px; */
 }
 
 .profileDropdown {
@@ -205,10 +211,6 @@
 }
 
 /* Dropdown container - needed to position the dropdown content */
-.dropdown {
-  float: left;
-  overflow: hidden;
-}
 
 .follow-dropdown,
 .acct-dropdown {
@@ -225,7 +227,7 @@
   border: none;
   outline: none;
   color: white;
-  padding: 14px 16px;
+  /* padding: 20px 16px; */
   background-color: inherit;
   font-family: inherit;
   margin: 0;
@@ -280,10 +282,6 @@
   position: fixed;
 }
 
-.backdrop {
-  /* display: none; */
-}
-
 /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
 @media screen and (max-width: 780px) {
   .topnav .topLeft,
@@ -311,9 +309,6 @@
   }
 
   .topnav .topCenter .container a {
-    /* float: none; */
-    /* background-color: #333; */
-    /* margin-left: 50%; */
     width: 95%;
     margin: 0 auto;
   }
@@ -332,7 +327,6 @@
     box-shadow: none;
     text-shadow: none;
     border-radius: 0;
-    /* width: 0px; */
   }
 
   .topnav .searchContainer:hover > .searchInput {
@@ -347,14 +341,7 @@
     background-color: #ddd;
     color: black;
   }
-  /* .topnav a:not(:first-child), .dropdown .dropbtn {
-    display: none;
-  } */
-  /* .topnav .topCenter, .topnav .topLeft, .topnav .topRight {
-    display: none;
-  } */
 
-  /* .topnav, .topLeft, .topCenter {display: block;} */
   .topnav a.icon {
     display: block;
     float: left;
@@ -377,38 +364,35 @@
   .topnav.responsive .topRight a {
     float: none;
     display: block;
-    /* flex-direction: column; */
     text-align: left;
   }
 
-  /* .topnav.responsive a {
-    float: none;
-    display: block;
-    flex-direction: column;
-    text-align: left;
-  } */
   .topnav.responsive {
     display: block;
   }
   .topnav.responsive .active {
     background-color: teal;
   }
-  /* .topnav.responsive .topLeft {
-    display: block;
-    margin-top: 45px;
-  } */
   .topnav.responsive .topRight {
     display: block;
     position: relative;
-    /* margin-top: 45px; */
     float: none;
   }
 
   .topnav.responsive .topCenter {
+    display: block;
+    position: relative;
     margin-top: 50px;
   }
 
-  /* .topnav.responsive .topCenter a:nth-child(2), */
+  .topnav.responsive .container  {
+    /* padding: 9px 16px; */
+    display: block;
+    position: relative;
+    /* align-items: center;
+    justify-content: center; */
+  }
+
   .topnav.responsive .topCenter a:nth-child(3) {
     display: none;
   }
@@ -431,9 +415,6 @@
     float: none;
     display: block;
   }
-  /* .topnav.responsive .topRight {
-    float: none;
-  } */
   .topnav.responsive .dropdown-content,
   .topnav.responsive .sm-content,
   .topnav.responsive .acct-content {
@@ -454,7 +435,6 @@
 
   .topnav.responsive .topRight .searchContainer {
     background: #fff;
-    /* height: 30px; */
     margin-top: 5px;
     border-radius: 30px;
     padding: 5px 20px;
@@ -464,12 +444,4 @@
   .topnav.responsive .searchDropdown:hover .searchInput {
     width: 90%;
   }
-
-  /* .topnav.responsive .dropdown {float: none;}
-  .topnav.responsive .dropdown-content {position: relative;}
-  .topnav.responsive .dropdown .dropbtn {
-    display: block;
-    width: 100%;
-    text-align: left;
-  } */
 }

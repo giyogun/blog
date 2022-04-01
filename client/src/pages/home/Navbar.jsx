@@ -58,9 +58,9 @@ const Navbar = () => {
     setShowModal(false);
   };
 
-  let icon = <AiOutlineMenu style={{fontSize: "22px", outline: "none"}} />;
+  let icon = <AiOutlineMenu style={{ fontSize: "22px", outline: "none" }} />;
   if (x === "topnav responsive") {
-    icon = <AiOutlineClose style={{fontSize: "22px"}} />;
+    icon = <AiOutlineClose style={{ fontSize: "22px" }} />;
   }
 
   return (
@@ -108,7 +108,7 @@ const Navbar = () => {
             HOME
           </NavLink>
 
-          <div className="dropdown">
+          <div to="#" className="dropdown">
             <button
               className="dropbtn"
               onClick={() => {
@@ -119,8 +119,9 @@ const Navbar = () => {
                 }
               }}
             >
-              WRITE {!ctx.isLoggedIn && <IoIosArrowDropdownCircle />}
+              WRITE 
             </button>
+            {/* <abbr><IoIosArrowDropdownCircle /></abbr> */}
 
             {!ctx.isLoggedIn && (
               <div className="dropdown-content">
@@ -135,18 +136,20 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className="follow-dropdown">
-        <button className="follow-dropbtn">
-          Follow Me <IoIosArrowDropdownCircle />
-        </button>
-        <div className="sm-content">
-          <Link to="/login" onClick={removeBarHandler}>
-            Link 1
-          </Link>
-          <Link to="#">Link 2</Link>
-          <Link to="#">Link 3</Link>
+      {/* <div className="container">
+        <div className="follow-dropdown">
+          <button className="follow-dropbtn">
+            Follow Me <IoIosArrowDropdownCircle />
+          </button>
+          <div className="sm-content">
+            <Link to="/login" onClick={removeBarHandler}>
+              Link 1
+            </Link>
+            <Link to="#">Link 2</Link>
+            <Link to="#">Link 3</Link>
+          </div>
         </div>
-      </div>
+      </div> */}
       <div className="topRight">
         {ctx.isLoggedIn && (
           <div className="acct-dropdown">

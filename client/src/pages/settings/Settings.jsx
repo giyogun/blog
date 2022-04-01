@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import classes from "./Settings.module.css";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -6,8 +6,11 @@ import { ImUser } from "react-icons/im";
 import useApiCall from "../../hooks/useApiCall";
 import EditorContainer from "../../components/draftjs/EditorContainer";
 import RichEditor from "../../components/draftjs/RichEditor";
+import DeleteModal from "../../components/UI/DeleteModal";
+import PostsContext from "../../context/postsContext";
 
 const Settings = () => {
+  const ctx = useContext(PostsContext);
   const ls = JSON.parse(localStorage.getItem("user"));
   const { profilePic } = ls;
   const [selectedFile, setSelectedFile] = useState(null);
@@ -62,18 +65,6 @@ const Settings = () => {
       newUserInfo.password = password;
     }
 
-    // if (selectedFile) {
-    //   const data = new FormData();
-    //   const filename = Date.now() + selectedFile.name;
-    //   data.append("name", filename);
-    //   data.append("file", selectedFile);
-    //   newUserInfo.profilePic = filename;
-    //   uploadImageQuery({
-    //     url: `http://localhost:5000/api/upload`,
-    //     method: "POST",
-    //     body: data,
-    //   });
-    // }
 
     const canMakePostReq = !!email || !!password || selectedFile;
 
@@ -90,7 +81,6 @@ const Settings = () => {
   const profileHandler = (e) => {
     e.preventDefault();
 
-    // const bio = bioRef.current.value;
     const twitter = twitterRef.current.value;
     const facebook = facebookRef.current.value;
     const linkedIn = linkedInRef.current.value;
@@ -150,6 +140,7 @@ const Settings = () => {
   }
   return (
     <div className={classes.settings}>
+      {ctx.modalIsShown && <DeleteModal />}
       <div className={classes.settingsWrapper}>
         <div className={classes.settingsTitle}>
           <span className={classes.settingsUpdateTitle}>My Profile</span>
@@ -174,20 +165,11 @@ const Settings = () => {
             />
           </div>
           <label>Public Bio</label>
-          <textarea  placeholder="Let your readers know about you..." defaultValue={ls.profileBio ? ls.profileBio : ""} onChange={(e)=>setBio(e.target.value)} />
-          {/* <RichEditor
-            className={classes.editor}
-            placeholder={
-              ls.profileBio
-                ? ls.profileBio
-                : "Let your readers know about you..."
-            }
-            defaultValue={ls.profileBio && ls.profileBio}
-            value={(enteredText) => setBio(enteredText)}
-            inner={(text) => {
-              if (text) setInner(true);
-            }}
-          /> */}
+          <textarea
+            placeholder="Let your readers know about you..."
+            defaultValue={ls.profileBio ? ls.profileBio : ""}
+            onChange={(e) => setBio(e.target.value)}
+          />
           <label>Twitter</label>
           <input
             type="text"
@@ -201,7 +183,6 @@ const Settings = () => {
             ref={facebookRef}
             placeholder="Enter your Facebook username"
             defaultValue={ls.facebookAcct && ls.facebookAcct}
-
           />
           <label>LinkedIn</label>
           <input
@@ -216,27 +197,9 @@ const Settings = () => {
       <div className={classes.settingsWrapper}>
         <div className={classes.settingsTitle}>
           <span className={classes.settingsUpdateTitle}>Account Settings</span>
-          <span className={classes.settingsDeleteTitle}>Delete Account</span>
+          <span onClick={()=> ctx.modal()} className={classes.settingsDeleteTitle}>Delete Account</span>
         </div>
         <form className={classes.settingsForm} onSubmit={updateInfoHandler}>
-          {/* <label>Profile Picture</label>
-          <div className={classes.settingsPP}>
-            {ppIsValid ? (
-              <img src={picSrc} alt="" />
-            ) : (
-              <ImUser className={classes.ppIcon} />
-            )}
-            <label htmlFor="fileInput">
-              <FaRegUserCircle className={classes.settingsPPIcon} />
-            </label>
-            <input
-              type="file"
-              id="fileInput"
-              style={{ display: "none" }}
-              accept=".jpg, .JPG, .jpeg, .JPEG, .png, .PNG"
-              onChange={picChangeHandler}
-            />
-          </div> */}
           <label>Username</label>
           <input type="text" value={ls.username} disabled />
           <label>Email</label>
@@ -246,7 +209,6 @@ const Settings = () => {
           <button className={classes.settingsSubmit}>Update</button>
         </form>
       </div>
-      {/* <Sidebar /> */}
     </div>
   );
 };

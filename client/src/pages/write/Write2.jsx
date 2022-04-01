@@ -1,18 +1,19 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import classes from "./Write.module.css";
 import { MdAddCircleOutline } from "react-icons/md";
 import { useHistory, useLocation } from "react-router";
-import EditorContainer from "../../components/draftjs/EditorContainer";
-import PostsContext from "../../context/postsContext";
 import useApiCall from "../../hooks/useApiCall";
-import AltEditor from "../../store/AltEditor";
-import RichEditor from "../../store/AltEditor";
-import MyEditor from "../../store/useImage";
+import PostsContext from "../../context/postsContext";
 import Draftail from "./Draftail";
+import EditorContainer from "../../components/draftjs/EditorContainer";
 
-import classes from "./NewMeetupForm.module.css";
-import Card from "./ui/Card";
-
-function NewMeetupForm(props) {
+const Write2 = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const ctx = useContext(PostsContext);
   const [selectedFile, setSelectedFile] = useState("");
@@ -20,14 +21,15 @@ function NewMeetupForm(props) {
   const history = useHistory();
   const [post, setPost] = useState({});
   const [isEditState, setIsEditState] = useState(false);
-  const titleRef = useRef();
   const [bodyText, setBodyText] = useState(null);
-  const [rawBodyText, setRawBodyText] = useState(null);
   const postId = location.search.split("=")[1];
+  const titleRef = useRef();
   const publicFolder = "http://localhost:5000/images/";
 
   const uploadImage = useCallback((data) => {}, []);
   const { _id } = ls;
+
+  // const [boldClass, setBoldClass] = useState(classes.toolbar);
 
   const getOnePost = useCallback(
     (res) => {
@@ -60,6 +62,7 @@ function NewMeetupForm(props) {
   const updatePostHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
+    // const newBody = bodyRef.current.value;
 
     if (!bodyText || !newTitle) {
       window.alert("Please fill all fields");
@@ -70,7 +73,6 @@ function NewMeetupForm(props) {
       const updatedPost = {
         title: newTitle,
         description: bodyText,
-        rawDescription: JSON.stringify(rawBodyText),
         id: post._id,
         username: post.username,
       };
@@ -99,7 +101,6 @@ function NewMeetupForm(props) {
       const newPost = {
         title: newTitle,
         description: bodyText,
-        rawDescription: JSON.stringify(rawBodyText),
         username: ls.username,
         userId: _id,
       };
@@ -120,15 +121,8 @@ function NewMeetupForm(props) {
           });
         }
       }
-      if (bodyText.length === 11 || !newTitle) {
-        window.alert("Please fill all fields");
-      } else if (bodyText.length <= 509) {
-        window.alert("You need to type at least 100 words!");
-      } else {
+      if (bodyText && newTitle) {
         ctx.createPost(newPost);
-        // console.log(newPost);
-        localStorage.setItem("testData", JSON.stringify(rawBodyText));
-        localStorage.setItem("pData", JSON.stringify(newPost));
       }
     }
   };
@@ -142,8 +136,8 @@ function NewMeetupForm(props) {
     } else {
       window.alert("Only images allowed");
     }
-    console.log(bodyText);
-    console.log(rawBodyText);
+
+
   };
 
   let pic;
@@ -164,14 +158,16 @@ function NewMeetupForm(props) {
     }
   }
 
-  return (
-    <Card>
-      <div className={classes.control}>
-        <img src={pic} alt="article header" className={classes.writeImg} />
-      </div>
+  // const xHandler = (e)=>{
+  //   setBodyText(e);
+  // }
+  // const bold = <button className={boldClass}>BOLD</button>;
 
-      <form className={classes.form} onSubmit={updatePostHandler}>
-        <div className={classes.control}>
+  return (
+    <div className={classes.write}>
+      <img src={pic} alt="article header" className={classes.writeImg} />
+      <form className={classes.writeForm} onSubmit={updatePostHandler}>
+        <div className={classes.writeFormGroup}>
           <label htmlFor="fileInput">
             <MdAddCircleOutline className={classes.writeIcon} />
           </label>
@@ -196,28 +192,19 @@ function NewMeetupForm(props) {
             placeholder={!isEditState ? "Tell your story..." : ""}
             defaultValue={isEditState ? bodyText : ""}
             value={(enteredText) => setBodyText(enteredText)}
-            inner={(text) => setRawBodyText(text)}
           />
-          {/* <Draftail
+        </div>
+        {/* <Draftail
           placeholder={!isEditState ? "Tell your story..." : ""}
           defaultValue={isEditState ? bodyText : ""}
           value={(enteredText) => setBodyText(enteredText)}
         /> */}
-          {/* <MyEditor
-            placeholder={!isEditState ? "Tell your story..." : ""}
-            defaultValue={isEditState ? bodyText : ""}
-            value={(enteredText) => setBodyText(enteredText)}
-            inner={(text) => setInner(text)}
-          /> */}
-          {/* <RichEditor /> */}
-          {/* <AltEditor /> */}
-        </div>
-        <div className={classes.actions}>
-          <button>Publish</button>
-        </div>
+        <button className={classes.writeSubmit}>Publish</button>
       </form>
-    </Card>
+      {/* {bold} */}
+    </div>
   );
-}
 
-export default NewMeetupForm;
+};
+
+export default Write2;

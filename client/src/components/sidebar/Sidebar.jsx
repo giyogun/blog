@@ -108,6 +108,7 @@ const Sidebar = () => {
     </div>
   );
 
+
   return (
     <Fragment>
       <div className={classes.sidebar}>
@@ -116,7 +117,7 @@ const Sidebar = () => {
           {arr && (
             <img
               src={
-                arr
+                arr && userData.profilePic
                   ? publicFolder + userData?.profilePic
                   : "https://themegoods-cdn-pzbycso8wng.stackpathdns.com/grandblog/demo/wp-content/uploads/2015/11/aboutme.jpg"
               }
@@ -124,9 +125,6 @@ const Sidebar = () => {
             />
           )}
           {arr && (
-            // <article
-            //   dangerouslySetInnerHTML={{ __html: bio["profileBio"] }}
-            // ></article>
             <article>{bio.profileBio}</article>
           )}
         </div>

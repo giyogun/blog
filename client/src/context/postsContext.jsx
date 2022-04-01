@@ -8,9 +8,11 @@ const PostsContext = React.createContext({
   searchedPosts: [],
   isLoggedIn: false,
   isLoading: true,
+  modalIsShown: true,
   // post: {},
   error: null,
   categories: [],
+  modal: () => {},
   createPost: () => {},
   updatePost: () => {},
   deletePost: () => {},
@@ -23,6 +25,7 @@ const PostsContext = React.createContext({
   resetPosts: () => {},
   filterPostsByUser: () => {},
   register: () => {},
+  deregister: () => {},
 });
 
 const BASE_URL = "http://localhost:5000/api";
@@ -41,6 +44,7 @@ export const PostsProvider = (props) => {
   const [posts1, setPosts1] = useState([]);
   const [cats, setCats] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(!!ls);
+  const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
 
@@ -98,11 +102,12 @@ export const PostsProvider = (props) => {
   const deleteSinglePost = useCallback(
     (res) => {
       if (res.statusText === "OK") {
+        setIsLoading(true);
         console.log("Post Deleted");
-        queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
         history.replace("/");
-        setIsLoading(false);
+        queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
       }
+      setIsLoading(false);
     },
     [history, queryPosts]
   );
@@ -143,14 +148,32 @@ export const PostsProvider = (props) => {
   const { queryPosts: userLogin } = useApiCall(loginApi);
 
   const registration = (res) => {
-    // if (!res.statusText === "OK") {
-    setErrorMessage(res);
+    if (res.statusText === "OK") {
+      setIsLoading(true);
+
+      history.push("/login");
+    } else {
+      setErrorMessage(res);
+    }
+    console.log(res);
+    // history.replace("/login");
     setIsLoading(false);
     // }
   };
 
   const { queryPosts: registerQuery } = useApiCall(registration);
 
+  const deregistration = (res) => {
+    if (res.statusText === "OK") {
+      logoutHandler();
+      console.log("User Deleted");
+      queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
+      // history.push("/register");
+      setIsLoading(false);
+    }
+  };
+
+  const { queryPosts: deleteUserQuery } = useApiCall(deregistration);
 
   useEffect(() => {
     queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
@@ -159,7 +182,6 @@ export const PostsProvider = (props) => {
   useEffect(() => {
     getCats({ method: "GET", url: `${BASE_URL}/categories` });
   }, [getCats]);
-
 
   const getPostsByUserHandler = (name) => {
     queryPostByUser({
@@ -187,7 +209,7 @@ export const PostsProvider = (props) => {
   };
 
   const deletePostHandler = (config) => {
-    setIsLoading(true);
+    // setIsLoading(true);
     deletePostQuery({
       method: "DELETE",
       url: `http://localhost:5000/api/posts/${config.id}`,
@@ -196,7 +218,7 @@ export const PostsProvider = (props) => {
   };
 
   const registrationHandler = (username, email, password) => {
-    setIsLoading(true);
+    // setIsLoading(true);
     registerQuery({
       url: `${BASE_URL}/auth/register`,
       method: "POST",
@@ -243,14 +265,29 @@ export const PostsProvider = (props) => {
     getCats({ method: "GET", url: `${BASE_URL}/categories` });
   };
 
+  const deleteUserHandler = (config) => {
+    setIsLoading(true);
+    deleteUserQuery({
+      method: "DELETE",
+      url: `http://localhost:5000/api/users/${config.id}`,
+      body: config,
+    });
+  };
+
+  const modalHandler = () => {
+    setShowModal((m) => !m);
+  };
+
   const contextData = {
     blogPosts: posts,
     searchedPosts: posts1,
     isLoggedIn: isLoggedIn,
     isLoading: isLoading,
+    modalIsShown: showModal,
     // post: singlePost,
     error: errorMessage,
     categories: cats,
+    modal: modalHandler,
     createPost: createPostHandler,
     updatePost: updatePostHandler,
     deletePost: deletePostHandler,
@@ -264,6 +301,7 @@ export const PostsProvider = (props) => {
     filterPostsByUser: getPostsByUserHandler,
     // getPost: getPostHandler,
     register: registrationHandler,
+    deregister: deleteUserHandler,
   };
   return (
     <PostsContext.Provider value={contextData}>

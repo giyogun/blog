@@ -13,7 +13,6 @@ import useApiCall from "../../hooks/useApiCall";
 import { Link } from "react-router-dom";
 import DeleteModal from "../UI/DeleteModal";
 
-
 const postDateHandler = (x) => {
   let displayedDate;
   const now = new Date();
@@ -43,14 +42,13 @@ const postDateHandler = (x) => {
   return displayedDate;
 };
 
-const SinglePost = (props) => {
+const SinglePost = () => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const x = ls?._id;
   const params = useParams();
   const { postId } = params;
   const history = useHistory();
   const [post, setPost] = useState({});
-  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const publicFolder = "http://localhost:5000/images/";
 
@@ -59,7 +57,7 @@ const SinglePost = (props) => {
 
   const getOnePost = useCallback((res) => {
     setPost(res.data);
-    localStorage.setItem("db", JSON.stringify(res.data));
+    localStorage.setItem("postInfo", JSON.stringify(res.data));
   }, []);
 
   const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
@@ -104,19 +102,9 @@ const SinglePost = (props) => {
                 />
                 <RiDeleteBin5Line
                   className={classes.singlePostIcon}
-                  onClick={() => setShowDeletePrompt(true)}
+                  onClick={() => ctx.modal()}
                 />
-                {showDeletePrompt && (
-                  <DeleteModal
-                    close={() => setShowDeletePrompt(false)}
-                    deletePost={() =>
-                      ctx.deletePost({
-                        userId: post.userId,
-                        id: post._id,
-                      })
-                    }
-                  />
-                )}
+                {ctx.modalIsShown && <DeleteModal />}
               </div>
             )}
           </h1>

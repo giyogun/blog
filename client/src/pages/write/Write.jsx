@@ -1,19 +1,14 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import classes from "./Write.module.css";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { MdAddCircleOutline } from "react-icons/md";
 import { useHistory, useLocation } from "react-router";
-import useApiCall from "../../hooks/useApiCall";
-import PostsContext from "../../context/postsContext";
-import Draftail from "./Draftail";
 import EditorContainer from "../../components/draftjs/EditorContainer";
+import PostsContext from "../../context/postsContext";
+import useApiCall from "../../hooks/useApiCall";
 
-const Write = () => {
+import classes from "./Write.module.css";
+import Card from "./ui/Card";
+
+function Write(props) {
   const ls = JSON.parse(localStorage.getItem("user"));
   const ctx = useContext(PostsContext);
   const [selectedFile, setSelectedFile] = useState("");
@@ -21,15 +16,14 @@ const Write = () => {
   const history = useHistory();
   const [post, setPost] = useState({});
   const [isEditState, setIsEditState] = useState(false);
-  const [bodyText, setBodyText] = useState(null);
-  const postId = location.search.split("=")[1];
   const titleRef = useRef();
+  const [bodyText, setBodyText] = useState(null);
+  const [rawBodyText, setRawBodyText] = useState(null);
+  const postId = location.search.split("=")[1];
   const publicFolder = "http://localhost:5000/images/";
 
   const uploadImage = useCallback((data) => {}, []);
   const { _id } = ls;
-
-  // const [boldClass, setBoldClass] = useState(classes.toolbar);
 
   const getOnePost = useCallback(
     (res) => {
@@ -62,7 +56,6 @@ const Write = () => {
   const updatePostHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
-    // const newBody = bodyRef.current.value;
 
     if (!bodyText || !newTitle) {
       window.alert("Please fill all fields");
@@ -73,6 +66,7 @@ const Write = () => {
       const updatedPost = {
         title: newTitle,
         description: bodyText,
+        rawDescription: JSON.stringify(rawBodyText),
         id: post._id,
         username: post.username,
       };
@@ -101,6 +95,7 @@ const Write = () => {
       const newPost = {
         title: newTitle,
         description: bodyText,
+        rawDescription: JSON.stringify(rawBodyText),
         username: ls.username,
         userId: _id,
       };
@@ -121,8 +116,15 @@ const Write = () => {
           });
         }
       }
-      if (bodyText && newTitle) {
+      if (bodyText.length === 11 || !newTitle) {
+        window.alert("Please fill all fields");
+      } else if (bodyText.length <= 509) {
+        window.alert("You need to type at least 100 words!");
+      } else {
         ctx.createPost(newPost);
+        // console.log(newPost);
+        localStorage.setItem("testData", JSON.stringify(rawBodyText));
+        localStorage.setItem("pData", JSON.stringify(newPost));
       }
     }
   };
@@ -136,8 +138,8 @@ const Write = () => {
     } else {
       window.alert("Only images allowed");
     }
-
-
+    console.log(bodyText);
+    console.log(rawBodyText);
   };
 
   let pic;
@@ -158,16 +160,14 @@ const Write = () => {
     }
   }
 
-  // const xHandler = (e)=>{
-  //   setBodyText(e);
-  // }
-  // const bold = <button className={boldClass}>BOLD</button>;
-
   return (
-    <div className={classes.write}>
-      <img src={pic} alt="article header" className={classes.writeImg} />
-      <form className={classes.writeForm} onSubmit={updatePostHandler}>
-        <div className={classes.writeFormGroup}>
+    <Card>
+      <div className={classes.control}>
+        <img src={pic} alt="article header" className={classes.writeImg} />
+      </div>
+
+      <form className={classes.form} onSubmit={updatePostHandler}>
+        <div className={classes.control}>
           <label htmlFor="fileInput">
             <MdAddCircleOutline className={classes.writeIcon} />
           </label>
@@ -192,19 +192,28 @@ const Write = () => {
             placeholder={!isEditState ? "Tell your story..." : ""}
             defaultValue={isEditState ? bodyText : ""}
             value={(enteredText) => setBodyText(enteredText)}
+            inner={(text) => setRawBodyText(text)}
           />
-        </div>
-        {/* <Draftail
+          {/* <Draftail
           placeholder={!isEditState ? "Tell your story..." : ""}
           defaultValue={isEditState ? bodyText : ""}
           value={(enteredText) => setBodyText(enteredText)}
         /> */}
-        <button className={classes.writeSubmit}>Publish</button>
+          {/* <MyEditor
+            placeholder={!isEditState ? "Tell your story..." : ""}
+            defaultValue={isEditState ? bodyText : ""}
+            value={(enteredText) => setBodyText(enteredText)}
+            inner={(text) => setInner(text)}
+          /> */}
+          {/* <RichEditor /> */}
+          {/* <AltEditor /> */}
+        </div>
+        <div className={classes.actions}>
+          <button>Publish</button>
+        </div>
       </form>
-      {/* {bold} */}
-    </div>
+    </Card>
   );
-
-};
+}
 
 export default Write;
