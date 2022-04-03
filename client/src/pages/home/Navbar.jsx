@@ -95,7 +95,7 @@ const Navbar = () => {
         </a>
       </div>
       <div className="topCenter">
-        <div className="container">
+        {/* <div className="container"> */}
           <NavLink
             to="/"
             exact
@@ -134,7 +134,7 @@ const Navbar = () => {
               </div>
             )}
           </div>
-        </div>
+        {/* </div> */}
       </div>
       {/* <div className="container">
         <div className="follow-dropdown">

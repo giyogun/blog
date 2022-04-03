@@ -42,32 +42,39 @@ const postDateHandler = (x) => {
   return displayedDate;
 };
 
-const SinglePost = () => {
+const SinglePost = ({ singlePost: post, id: postId }) => {
   const ls = JSON.parse(localStorage.getItem("user"));
   const x = ls?._id;
-  const params = useParams();
-  const { postId } = params;
+  // const params = useParams();
+  // const { postId } = params;
   const history = useHistory();
-  const [post, setPost] = useState({});
+  // const [post, setPost] = useState({});
   const [canEdit, setCanEdit] = useState(false);
+  // const [pageIsFound, SetPageIsFound] = useState(false);
   const publicFolder = "http://localhost:5000/images/";
 
   const ctx = useContext(PostsContext);
   const { isLoggedIn } = ctx;
 
-  const getOnePost = useCallback((res) => {
-    setPost(res.data);
-    localStorage.setItem("postInfo", JSON.stringify(res.data));
-  }, []);
+  // const getOnePost = useCallback((res) => {
+  //   if (res.statusText === "OK") {
+  //     setPost(res.data);
+  //     localStorage.setItem("postInfo", JSON.stringify(res.data));
+  //     console.log(res);
+  //     SetPageIsFound(true);
+  //   } else {
+  //     SetPageIsFound(false);
+  //   }
+  // }, []);
 
-  const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
+  // const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
 
-  useEffect(() => {
-    singlePostQuery({
-      method: "GET",
-      url: `http://localhost:5000/api/posts/${postId}`,
-    });
-  }, [singlePostQuery, postId]);
+  // useEffect(() => {
+  //   singlePostQuery({
+  //     method: "GET",
+  //     url: `http://localhost:5000/api/posts/${postId}`,
+  //   });
+  // }, [singlePostQuery, postId]);
 
   useEffect(() => {
     setCanEdit(x === post.userId);
@@ -80,6 +87,7 @@ const SinglePost = () => {
   const editPostHandler = () => {
     history.push(`/write?edit=${postId}`);
   };
+
 
   return (
     <Fragment>

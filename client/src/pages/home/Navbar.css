@@ -24,13 +24,16 @@
 
 /* Style the links inside the navigation bar */
 .topnav a {
-  /* float: none; */
   display: block;
   color: #f2f2f2;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
   font-size: 17px;
+}
+
+.dropbtn, .acct-dropbtn {
+  padding: 14px 16px;
 }
 
 .topLeft,
@@ -212,6 +215,7 @@
 
 /* Dropdown container - needed to position the dropdown content */
 
+
 .follow-dropdown,
 .acct-dropdown {
   display: none;
@@ -385,12 +389,18 @@
     margin-top: 50px;
   }
 
+
+
   .topnav.responsive .container  {
     /* padding: 9px 16px; */
     display: block;
     position: relative;
     /* align-items: center;
     justify-content: center; */
+  }
+
+  .topnav.responsive .topCenter a {
+    /* left: 0; */
   }
 
   .topnav.responsive .topCenter a:nth-child(3) {

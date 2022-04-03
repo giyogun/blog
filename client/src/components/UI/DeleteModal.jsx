@@ -23,7 +23,6 @@ const ModalOverlay = () => {
   const location = useLocation();
   const { pathname } = location;
   const page = pathname.split("/")[2];
-  console.log(page);
 
   useEffect(() => {
     if (!page) {
@@ -33,7 +32,6 @@ const ModalOverlay = () => {
       setMessage("this post");
       setIsPost(true);
     }
-    console.log(1);
   }, [page]);
 
   const deleteHandler = () => {
@@ -45,7 +43,6 @@ const ModalOverlay = () => {
       ctx.modal();
       return;
     } else if (isSettings) {
-      console.log(user);
       ctx.deregister({
         userId: user._id,
         id: user._id,

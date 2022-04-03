@@ -9,6 +9,7 @@ import Settings from "./pages/settings/Settings";
 import Single from "./pages/single/Single";
 import "./App.css";
 import Write from "./pages/write/Write";
+import NotFound from "./pages/404/NotFound";
 
 function App() {
   const ctx = useContext(PostsContext);
@@ -29,7 +30,7 @@ function App() {
             <Route path="/login">
               {!ctx.isLoggedIn ? <Login /> : <Redirect to="/write" />}
             </Route>
-            <Route path="/settings">
+            <Route path="/settings" exact>
               {ctx.isLoggedIn ? <Settings /> : <Redirect to="/login" />}
             </Route>
             <Route path="/posts/:postId">
@@ -37,6 +38,12 @@ function App() {
             </Route>
             <Route path="/write">
               {ctx.isLoggedIn ? <Write /> : <Redirect to="/login" />}
+            </Route>
+            <Route path="/not-found">
+              <NotFound />
+            </Route>
+            <Route path="*">
+              <NotFound />
             </Route>
           </Switch>
         </div>
