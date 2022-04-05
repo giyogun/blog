@@ -297,8 +297,8 @@
   .topnav .topCenter button {
     display: none;
   }
-  .topnav .topCenter .dropdown .dropdown-content a {
-    display: block;
+  .topnav .topCenter .dropdown .dropdown-content {
+    display: none;
   }
 
   .active {
@@ -411,7 +411,11 @@
     display: block;
   }
 
-  .topnav.responsive .topCenter .container .dropdown:hover .dropdown-content {
+  /* .topnav.responsive .topCenter .dropdown .dropdown-content {
+    display: block;
+  } */
+
+  .topnav.responsive .topCenter .dropdown:hover .dropdown-content {
     display: block;
   }
 

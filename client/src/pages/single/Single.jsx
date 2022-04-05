@@ -14,14 +14,18 @@ const Single = () => {
 
   const getOnePost = useCallback((res) => {
     if (res.statusText === "OK") {
-      setPost(res.data);
-      localStorage.setItem("postInfo", JSON.stringify(res.data));
-      console.log(res);
-      setPageIsFound(true);
+      if (res.data !== null) {
+        setPost(res.data);
+        localStorage.setItem("postInfo", JSON.stringify(res.data));
+        console.log(res);
+        setPageIsFound(true);
+      } else if (res.data === null) {
+        window.location.replace("/not-found");
+      }
     } else {
       setPageIsFound(false);
       console.log(res);
-      window.location.replace("/not-found")
+      window.location.replace("/not-found");
     }
   }, []);
 
@@ -36,10 +40,12 @@ const Single = () => {
 
   return (
     <Fragment>
-      {pageIsFound && <div className={classes.single}>
-        <SinglePost singlePost={post} id={postId} />
-        <Sidebar />
-      </div>}
+      {pageIsFound && (
+        <div className={classes.single}>
+          <SinglePost singlePost={post} id={postId} />
+          <Sidebar />
+        </div>
+      )}
     </Fragment>
   );
 };

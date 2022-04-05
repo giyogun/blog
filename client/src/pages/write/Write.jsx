@@ -17,7 +17,9 @@ function Write(props) {
   const history = useHistory();
   const [post, setPost] = useState({});
   const [cats, setCats] = useState([]);
+  const [textFieldIsEmpty, setTextFieldIsEmpty] = useState(false);
   const [isEditState, setIsEditState] = useState(false);
+  const [isMaxedOut, setIsMaxedOut] = useState();
   const titleRef = useRef();
   const [bodyText, setBodyText] = useState(null);
   const [rawBodyText, setRawBodyText] = useState(null);
@@ -55,14 +57,27 @@ function Write(props) {
       });
     }
   }, [singlePostQuery, postId]);
+  console.log(bodyText);
+
+  let errorMessage;
 
   const postHandler = (e) => {
     e.preventDefault();
     const newTitle = titleRef.current.value;
 
-    if (!bodyText || !newTitle) {
-      window.alert("Please fill all fields");
+    // if (!bodyText || !newTitle) {
+    //   window.alert("Please fill all fields");
+    //   return;
+    // }
+
+    if (bodyText === "<p><br></p>" || !bodyText) {
+      setTextFieldIsEmpty(true);
+      errorMessage = (
+        <p className={classes.errorText}>This field should not be blank</p>
+      );
       return;
+    } else {
+      setTextFieldIsEmpty(false);
     }
 
     if (isEditState) {
@@ -85,8 +100,8 @@ function Write(props) {
         data.append("file", selectedFile);
         updatedPost.photo = filename;
         if (!bodyText || !newTitle) {
-          window.alert("Please fill all fields");
-          return;
+          // window.alert("Please fill all fields");
+          // return;
         } else {
           uploadImageQuery({
             url: `http://localhost:5000/api/upload`,
@@ -128,16 +143,12 @@ function Write(props) {
           });
         }
       }
-      if (bodyText.length === 11 || !newTitle) {
-        window.alert("Please fill all fields");
-      } else if (bodyText.length <= 509) {
-        window.alert("You need to type at least 100 words!");
-      } else {
+      //  else {
         ctx.createPost(newPost);
         console.log(newPost);
-        localStorage.setItem("testData", JSON.stringify(rawBodyText));
-        localStorage.setItem("pData", JSON.stringify(newPost));
-      }
+        // localStorage.setItem("testData", JSON.stringify(rawBodyText));
+        // localStorage.setItem("pData", JSON.stringify(newPost));
+      // }
     }
   };
 
@@ -150,8 +161,6 @@ function Write(props) {
     } else {
       window.alert("Only images allowed");
     }
-    console.log(bodyText);
-    console.log(rawBodyText);
   };
 
   let pic;
@@ -171,46 +180,6 @@ function Write(props) {
       pic = URL.createObjectURL(selectedFile);
     }
   }
-
-  const [isMaxedOut, setIsMaxedOut] = useState();
-
-  const options = [
-    { value: "music", label: "Music" },
-    { value: "tech", label: "Tech" },
-    { value: "cinema", label: "Cinema" },
-    { value: "life", label: "Life" },
-    { value: "sport", label: "Sport" },
-    { value: "style", label: "Style" },
-  ];
-
-  const alt = [
-    { name: "life", label: "Life" },
-    { name: "sport", label: "Sport" },
-    { name: "music", label: "Music" },
-  ];
-
-  const another = [
-    {
-      _id: "621e24e8d0269f9b0b4902cd",
-      value: "music",
-      label: "Music",
-    },
-    {
-      _id: "621e24e8d0269f9b0b4902cdw",
-      value: "tech",
-      label: "Tech",
-    },
-    {
-      _id: "621e24e8d0269f9b0b4902cd1",
-      value: "life",
-      label: "Life",
-    },
-  ];
-
-  another.map((m) => {
-    m.newName = m.value;
-    delete m.value;
-  });
 
   return (
     <Card>
@@ -237,6 +206,7 @@ function Write(props) {
             ref={titleRef}
             className={classes.writeInput}
             autoFocus={true}
+            required
           />
         </div>
         <div className={classes.editor}>
@@ -245,6 +215,7 @@ function Write(props) {
             defaultValue={isEditState ? bodyText : ""}
             value={(enteredText) => setBodyText(enteredText)}
             inner={(text) => setRawBodyText(text)}
+            required
           />
           {/* <Draftail
           placeholder={!isEditState ? "Tell your story..." : ""}
@@ -259,21 +230,24 @@ function Write(props) {
           /> */}
           {/* <RichEditor /> */}
           {/* <AltEditor /> */}
-          <Select
-            options={isMaxedOut ? [] : ctx.categories}
-            isClearable={true}
-            isMulti={true}
-            isSearchable={true}
-            placeholder="Select a category..."
-            onChange={(e) => {
-              setCats(e);
-              if (e.length === 2) setIsMaxedOut(true);
-              if (e.length < 2) setIsMaxedOut(false);
-              console.log(ctx.categories);
-            }}
-            noOptionsMessage={() => "Maximum of two options allowed"}
-            defaultValue={post?.categories}
-          />
+          {textFieldIsEmpty && errorMessage}
+          <div className={classes.selectGroup}>
+            <Select
+              options={isMaxedOut ? [] : ctx.categories}
+              isClearable={true}
+              isMulti={true}
+              isSearchable={true}
+              placeholder="Select a category..."
+              onChange={(e) => {
+                setCats(e);
+                if (e.length === 2) setIsMaxedOut(true);
+                if (e.length < 2) setIsMaxedOut(false);
+                console.log(ctx.categories);
+              }}
+              noOptionsMessage={() => "Maximum of two options allowed"}
+              defaultValue={post?.categories}
+            />
+          </div>
         </div>
         <div className={classes.actions}>
           <button>Publish</button>

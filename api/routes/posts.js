@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const Post = require("../models/Post");
+const { findByIdAndDelete } = require("../models/Post");
 
 //CREATE POST
 router.post("/", async (req, res) => {
@@ -84,6 +85,7 @@ router.delete("/:id", async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (post.userId === req.body.userId) {
       try {
+        // await findByIdAndDelete(req.params.id);
         await post.delete();
         res.status(200).json("Delete Successful!");
       } catch (error) {

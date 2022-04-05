@@ -56,12 +56,15 @@ export const PostsProvider = (props) => {
 
   const { queryPosts: getCats } = useApiCall(getAllCats);
 
+  
   const createPostFunc = useCallback(
     (res) => {
       if (res.statusText === "OK") {
+        setIsLoading(true);
         history.replace("/posts/" + res.data._id);
-        setIsLoading(false);
       }
+      console.log(res);
+      setIsLoading(false);
     },
     [history]
   );
@@ -192,7 +195,6 @@ export const PostsProvider = (props) => {
   };
 
   const createPostHandler = (config) => {
-    setIsLoading(true);
     createPostQuery({
       method: "POST",
       url: `http://localhost:5000/api/posts/`,

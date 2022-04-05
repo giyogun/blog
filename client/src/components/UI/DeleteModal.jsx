@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 import PostsContext from "../../context/postsContext";
+import useApiCall from "../../hooks/useApiCall";
 import styles from "../UI/DeleteModal.module.css";
 
-const postInfo = JSON.parse(localStorage.getItem("postInfo"));
-const userInfo = JSON.parse(localStorage.getItem("user"));
+const userInfo = localStorage.getItem("user");
 
 const Backdrop = () => {
   const ctx = useContext(PostsContext);
@@ -15,37 +15,52 @@ const Backdrop = () => {
 
 const ModalOverlay = () => {
   const ctx = useContext(PostsContext);
-  const [user, setUser] = useState(userInfo);
-  const [post, setPost] = useState(postInfo);
+  const [user, setUser] = useState(JSON.parse(userInfo));
+  const [post, setPost] = useState({});
   const [isSettings, setIsSettings] = useState(false);
   const [isPost, setIsPost] = useState(false);
   const [message, setMessage] = useState("");
   const location = useLocation();
   const { pathname } = location;
   const page = pathname.split("/")[2];
+  const params = useParams();
+  const { postId } = params;
+
+  const getOnePost = useCallback((res) => {
+    if (res.statusText === "OK") {
+      setPost(res.data);
+    }
+  }, []);
+
+  const { queryPosts: singlePostQuery } = useApiCall(getOnePost);
 
   useEffect(() => {
     if (!page) {
+      setUser(JSON.parse(userInfo));
       setMessage("your account");
       setIsSettings(true);
     } else {
+      singlePostQuery({
+        method: "GET",
+        url: `http://localhost:5000/api/posts/${postId}`,
+      });
       setMessage("this post");
       setIsPost(true);
     }
-  }, [page]);
+  }, [page, postId, singlePostQuery]);
 
   const deleteHandler = () => {
     if (isPost) {
       ctx.deletePost({
-        userId: post.userId,
-        id: post._id,
+        userId: post?.userId,
+        id: post?._id,
       });
       ctx.modal();
       return;
     } else if (isSettings) {
       ctx.deregister({
-        userId: user._id,
-        id: user._id,
+        userId: user?._id,
+        id: user?._id,
       });
       ctx.modal();
     }

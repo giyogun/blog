@@ -14,6 +14,14 @@
   margin-bottom: 0.5rem;
 }
 
+.errorText {
+  color: #b40e0e;
+  margin-top: 10px;
+}
+
+.selectGroup {
+  margin-top: 20px;
+}
 
 
 .actions {
