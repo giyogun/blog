@@ -141,7 +141,7 @@ const Sidebar = () => {
                   filterPosts(c.name);
                 }}
               >
-                {c.name}
+                {c.label}
               </li>
             ))}
           </ul>

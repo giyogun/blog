@@ -63,13 +63,13 @@ const Post = () => {
             )}
             <div className={classes.postInfo}>
               <div className={classes.postCats}>
-                {post.categories.map((c) => (
+                {post.categories.map((c, index) => (
                   <span
-                    key={Math.random()}
+                    key={index}
                     className={classes.postCat}
                     onClick={() => filterPostsHandler(c)}
                   >
-                    {c}
+                    {c.label}
                   </span>
                 ))}
               </div>

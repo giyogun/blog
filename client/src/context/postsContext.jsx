@@ -104,10 +104,11 @@ export const PostsProvider = (props) => {
       if (res.statusText === "OK") {
         setIsLoading(true);
         console.log("Post Deleted");
-        history.replace("/");
         queryPosts({ method: "GET", url: `${BASE_URL}/posts` });
+        history.replace("/");
       }
       setIsLoading(false);
+      console.log(res);
     },
     [history, queryPosts]
   );
