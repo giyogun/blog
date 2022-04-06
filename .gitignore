@@ -8,3 +8,4 @@ api/package-lock.json
 /api/.env
 /api/images
 /client/src/components/posts/data.js
+.env
