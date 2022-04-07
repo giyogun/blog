@@ -10,6 +10,7 @@ import Single from "./pages/single/Single";
 import "./App.css";
 import Write from "./pages/write/Write";
 import NotFound from "./pages/404/NotFound";
+import RegisterForm from "./pages/register/RegisterForm";
 
 function App() {
   const ctx = useContext(PostsContext);
@@ -25,8 +26,11 @@ function App() {
               <Home />
             </Route>
             <Route path="/register">
-              {ctx.isLoggedIn ? <Redirect to="/settings" /> : <Register />}
+              {ctx.isLoggedIn ? <Redirect to="/settings" /> : <RegisterForm />}
             </Route>
+            {/* <Route path="/register">
+              {ctx.isLoggedIn ? <Redirect to="/settings" /> : <Register />}
+            </Route> */}
             <Route path="/login">
               {!ctx.isLoggedIn ? <Login /> : <Redirect to="/write" />}
             </Route>
